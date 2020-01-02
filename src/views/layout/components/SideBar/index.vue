@@ -55,7 +55,7 @@ export default {
       isCollapse: false,
       arr: [],
       list: [],
-      iconlist: ['el-icon-edit-outline','el-icon-warning-outline','el-icon-tickets','el-icon-user','el-icon-data-analysis']
+      // iconlist: ['el-icon-edit-outline','el-icon-warning-outline','el-icon-tickets','el-icon-user','el-icon-data-analysis']
     };
   },
   computed: {
@@ -65,6 +65,7 @@ export default {
     this.getRoutes()
   },
   methods: {
+    // 获取routes对象
     getRoutes(){
       for(let i=0;i<this.routes.length;i++){
       if(this.routes[i].hidden){
@@ -73,7 +74,7 @@ export default {
         }
       }
       for(let j =0;j<this.arr.length;j++){
-        this.arr[j].icon = this.iconlist[j]
+        // this.arr[j].icon = this.iconlist[j]
         this.list.push(this.arr[j])
       }
       console.log(this.list)

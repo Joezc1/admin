@@ -4,6 +4,7 @@ import Layout from '@/views/layout'
 
 Vue.use(VueRouter)
 
+
 const routes = [
   {
     path: '/',
@@ -26,6 +27,7 @@ const routes = [
     component: Layout,
     name: 'data_analysis',
     adminname: '数据分析',
+    icon: 'el-icon-data-analysis',
     meta: {
       title: 'data_analysis'
     },
@@ -47,6 +49,7 @@ const routes = [
     component: Layout,
     name: 'topic_manage',
     adminname: '话题管理',
+    icon: 'el-icon-edit-outline',
     meta: {
       title: 'topic_manage'
     },
@@ -66,6 +69,7 @@ const routes = [
   {
     path: '/answer_manage',
     adminname: '回答管理',
+    icon: 'el-icon-warning-outline',
     component: Layout,
     name: 'answer_manage',
     meta: {
@@ -89,6 +93,7 @@ const routes = [
     component: Layout,
     adminname: '内容管理',
     name: 'content_manage',
+    icon: 'el-icon-tickets',
     meta: {
       title: 'content_manage'
     },
@@ -109,6 +114,7 @@ const routes = [
     path: '/user_manage',
     component: Layout,
     name: 'user_manage',
+    icon: 'el-icon-user',
     adminname: '用户管理',
     meta: {
       title: 'user_manage'
