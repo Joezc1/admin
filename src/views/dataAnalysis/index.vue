@@ -18,7 +18,7 @@ export default {
         },
         // 标题
         title: {
-          text: "南丁格尔玫瑰图",
+          text: "南丁格尔",
           subtext: "纯属虚构",
           textStyle: {
             color: "#ffffff"
