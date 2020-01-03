@@ -35,6 +35,7 @@
       </el-row>
     </div>
     <pieEchart v-if="index==1" :mychartOption="pieoption"></pieEchart>
+    <lineEchart v-if="index==2" :mychartOption="lineoption"></lineEchart>
     <barEchart v-if="index==3" :mychartOption="baroption"></barEchart>
   </div>
 </template>
@@ -42,13 +43,16 @@
 <script>
 // 柱状图颜色
 var colors = ["#5793f3", "#d14a61", "#675bba"];
+
 const pieEchart = () => import("../../components/pieEchart");
 const barEchart = () => import("../../components/barEchart");
+const lineEchart = () => import("../../components/lineEchart");
 export default {
   data() {
     return {
       // 判断当前选中的图表下标
       index: 1,
+      // 饼图属性
       pieoption: {
         // 图表背景颜色
         // 默认图表文字
@@ -272,6 +276,37 @@ export default {
             ]
           }
         ]
+      },
+      // 折线图属性
+      lineoption: {
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross"
+          }
+        },
+        toolbox: {
+          feature: {
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        yAxis: {
+          type: "value"
+        },
+        series: [
+          {
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: "line",
+            areaStyle: {}
+          }
+        ]
       }
     };
   },
@@ -283,8 +318,9 @@ export default {
   created() {},
   mounted() {},
   components: {
-    "pieEchart": pieEchart,
-    "barEchart": barEchart
+    pieEchart: pieEchart,
+    barEchart: barEchart,
+    lineEchart: lineEchart
   }
 };
 </script>

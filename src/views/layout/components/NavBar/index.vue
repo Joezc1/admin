@@ -7,7 +7,7 @@
           <img src="@/assets/img/a.jpg" />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="a" icon="el-icon-plus">黄金糕</el-dropdown-item>
+          <el-dropdown-item command="a" icon="el-icon-setting">设置</el-dropdown-item>
           <el-dropdown-item command="b" icon="el-icon-circle-plus">狮子头</el-dropdown-item>
           <el-dropdown-item command="c" icon="el-icon-circle-plus-outline">退出</el-dropdown-item>
           <el-dropdown-item command="d" icon="el-icon-check">双皮奶</el-dropdown-item>

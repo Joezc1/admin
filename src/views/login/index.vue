@@ -1,5 +1,5 @@
 <template>
-  <div class="login-main" :style="bodystyle">
+  <div class="login-main">
     <div class="login-header">
       <el-row type="flex" class="row-bg" justify="end">
         <el-col class="header-color clearfix" :span="3">
@@ -16,8 +16,8 @@
         </el-col>
       </el-row>
     </div>
-    <div class="login-body" :style="loginstyle">
-      <h5 class="login-title">用户登录</h5>
+    <div class="login-body" :style="bodystyle">
+      <h6 class="login-title">用户登录</h6>
       <el-form
         size="medium "
         :model="ruleForm"
@@ -88,6 +88,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let list = []
+          localStorage.setItem('tags',JSON.stringify(list))
           this.$router.push("/data_analysis/analysis_list")
         } else {
           console.log("error submit!!");
@@ -115,11 +117,11 @@ export default {
     },
     // 重置主题色
     resetColor() {
-      this.bodystyle["background-color"] = "#545c64";
+      this.bodystyle["background-color"] = "#fff";
       this.loginstyle["background-color"] = "#fff";
-      localStorage.backcolor = "#545c64";
+      localStorage.backcolor = "#fff";
       localStorage.logincolor = "#fff";
-      this.color = "#545c64";
+      this.color = "#fff";
     },
     // 改变主题色
     changeColor() {
@@ -183,12 +185,13 @@ body {
   height: 100%;
 }
 .login-main {
+  background: url('../../assets/img/backone.jpg') no-repeat;
+  background-size: cover;
   padding: 20px;
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
   margin: 0 auto;
-  box-sizing: border-box;
 }
 
 .login-title{
@@ -220,6 +223,8 @@ body {
   transform: translateY(-20%);
   transform: translateX(-50%);
   box-shadow: 0 2px 12px 2px rgba(0, 0, 0, 0.3);
+  opacity: 0.8;
+  font-size: 17px;
 }
 .login-body:hover {
   box-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.7);

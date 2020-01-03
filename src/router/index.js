@@ -4,12 +4,35 @@ import Layout from '@/views/layout'
 
 Vue.use(VueRouter)
 
+   // 数据分析
+  //  {
+  //   path: '/data_analysis',
+  //   component: Layout,
+  //   name: 'data_analysis',
+  //   adminname: '数据分析',//显示名称
+  //   icon: 'el-icon-data-analysis',//icon图片
+  //   meta: {
+  //     title: 'data_analysis'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'analysis_list',
+  //       component: () => import("../views/dataAnalysis"),
+  //       adminname: '数据列表',
+  //       upperpath: /data_analysis,//上级路径
+  //       name: 'analysis_list',
+  //       meta: {
+  //         title: 'analysis_list'
+  //       }
+  //     }
+  //   ]
+  // },
 
 const routes = [
   {
     path: '/',
     name: 'login',
-    hidden: true,
+    hidden: true,//是否显示
     meta: {
       title: 'login'
     },
@@ -37,6 +60,7 @@ const routes = [
         component: () => import("../views/dataAnalysis"),
         adminname: '数据列表',
         name: 'analysis_list',
+        upperpath: '/data_analysis',
         meta: {
           title: 'analysis_list'
         }
@@ -57,6 +81,7 @@ const routes = [
       {
         adminname: '话题列表',
         path: 'topic_list',
+        upperpath: '/topic_manage',
         component: () => import("../views/topicManage"),
         name: 'topic_list',
         meta: {
@@ -79,6 +104,7 @@ const routes = [
       {
         adminname: '回答列表',
         path: 'answer_list',
+        upperpath: '/answer_manage',
         component: () => import("../views/answerManage"),
         name: 'answer_list',
         meta: {
@@ -101,6 +127,7 @@ const routes = [
       {
         path: 'content_list',
         adminname: '公告管理',
+        upperpath: '/content_manage',
         component: () => import("../views/contentManage"),
         name: 'content_list',
         meta: {
@@ -122,6 +149,7 @@ const routes = [
     children: [
       {
         adminname: '用户列表',
+        upperpath: '/user_manage',
         path: 'user_list',
         component: () => import("../views/userManage"),
         name: 'user_list',
