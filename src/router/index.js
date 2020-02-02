@@ -44,6 +44,12 @@ const routes = [
     hidden: true,
     component: () => import('../views/layout')
   },
+  {
+    path: '/tuozhuaiDemo',
+    name: 'tuozhuaiDemo',
+    hidden: true,
+    component: () => import('../views/tuozhuaiDemo')
+  },
    // 数据分析
    {
     path: '/data_analysis',

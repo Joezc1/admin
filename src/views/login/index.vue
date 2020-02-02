@@ -30,7 +30,7 @@
           <el-input class="form-input" v-model="ruleForm.name"></el-input>
         </el-form-item>
         <el-form-item class="clearfix label" label="密码" prop="password">
-          <el-input  class="form-input" type="password" v-model="ruleForm.password"></el-input>
+          <el-input class="form-input" type="password" v-model="ruleForm.password"></el-input>
         </el-form-item>
         <el-form-item class="btns">
           <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -38,8 +38,8 @@
         </el-form-item>
       </el-form>
       <div class="body-bottem clearfix">
-          <div class="bottem-left">注册</div>
-          <div class="bottem-right">忘记密码?</div>
+        <div class="bottem-left">注册</div>
+        <div class="bottem-right">忘记密码?</div>
       </div>
     </div>
   </div>
@@ -63,7 +63,12 @@ export default {
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字母和数字", trigger: "blur" }
+          {
+            min: 3,
+            max: 5,
+            message: "长度在 3 到 5 个字母和数字",
+            trigger: "blur"
+          }
         ]
       },
       logincolor: "",
@@ -88,9 +93,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let list = []
-          localStorage.setItem('tags',JSON.stringify(list))
-          this.$router.push("/data_analysis/analysis_list")
+          // localStorage.removeItem('tags')
+          let list = [];
+          localStorage.setItem("tags", JSON.stringify(list));
+          sessionStorage.menuindex = '1-1'
+          this.$router.push("/data_analysis/analysis_list");
         } else {
           console.log("error submit!!");
           return false;
@@ -150,34 +157,34 @@ export default {
 </script>
 
 <style lang="scss">
-.body-bottem{
+.body-bottem {
   width: 100%;
-  height: 30px;;
+  height: 30px;
 }
-.bottem-left{
-    float: left;
-    width: 55px;
-    text-align: left;
-    font-size: 16px;
-    padding: 0 0 0 10px;
-    box-sizing: border-box;
-    cursor: pointer;
-    color: #000000;
+.bottem-left {
+  float: left;
+  width: 55px;
+  text-align: left;
+  font-size: 16px;
+  padding: 0 0 0 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: #000000;
 }
-.bottem-right{
-    float: right;
-    width: 100px;
-    text-align: right;
-    font-size: 16px;
-    padding: 0 10px 0 0;
-    box-sizing: border-box;
-    cursor: pointer;
-    color: #000000;
+.bottem-right {
+  float: right;
+  width: 100px;
+  text-align: right;
+  font-size: 16px;
+  padding: 0 10px 0 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: #000000;
 }
-.bottem-left:hover{
+.bottem-left:hover {
   color: #66b1ff;
 }
-.bottem-right:hover{
+.bottem-right:hover {
   color: #66b1ff;
 }
 body {
@@ -185,7 +192,7 @@ body {
   height: 100%;
 }
 .login-main {
-  background: url('../../assets/img/backone.jpg') no-repeat;
+  background: url("../../assets/img/backone.jpg") no-repeat;
   background-size: cover;
   padding: 20px;
   box-sizing: border-box;
@@ -194,14 +201,14 @@ body {
   margin: 0 auto;
 }
 
-.login-title{
-  margin:  0 auto;
+.login-title {
+  margin: 0 auto;
   font-size: 23px;
   text-align: center;
   margin-top: 12px;
   box-sizing: border-box;
 }
-.demo-ruleForm{
+.demo-ruleForm {
   text-align: center;
   margin-top: 20px;
   box-sizing: border-box;
@@ -223,7 +230,7 @@ body {
   transform: translateY(-20%);
   transform: translateX(-50%);
   box-shadow: 0 2px 12px 2px rgba(0, 0, 0, 0.3);
-  opacity: 0.8;
+  opacity: 0.9;
   font-size: 17px;
 }
 .login-body:hover {
@@ -242,21 +249,21 @@ body {
     float: left;
   }
 }
-.el-form-item__label{
+.el-form-item__label {
   float: left;
 }
-.form-input{
+.form-input {
   margin-left: 0;
   width: 320px;
   float: left;
 }
-.label /deep/ .el-form-item__label{
+.label /deep/ .el-form-item__label {
   color: #000000;
 }
-.btns /deep/ .el-form-item__content{
+.btns /deep/ .el-form-item__content {
   margin-left: 0;
 }
-.el-form /deep/ .el-form-item{
+.el-form /deep/ .el-form-item {
   margin-bottom: 19px;
 }
 </style>

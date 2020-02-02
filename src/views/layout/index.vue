@@ -2,7 +2,9 @@
   <div class="layout-main">
     <NavBar class="layout-header"></NavBar>
     <div class="layout-body">
-      <SideBar class="body-left"></SideBar>
+      <keep-alive>
+        <SideBar class="body-left"></SideBar>
+      </keep-alive>
       <Tags></Tags>
       <AppMain class="body-right"></AppMain>
     </div>

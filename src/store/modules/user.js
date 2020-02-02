@@ -18,6 +18,11 @@ const user = {
       sessionStorage.removeItem('login')
       sessionStorage.removeItem('userId')
       sessionStorage.removeItem('name')
+      sessionStorage.removeItem('menuindex')
+      let list = []
+      localStorage.setItem('tags',JSON.stringify(list))
+      // localStorage.clear()
+      // localStorage.removeItem('tags')
       // commit('SET_MENUS', [])
     }
   },

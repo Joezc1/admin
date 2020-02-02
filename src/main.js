@@ -8,6 +8,7 @@ import './assets/css/btns.css'
 
 import echarts from 'echarts'
 
+
 Vue.prototype.echarts = echarts
 Vue.config.productionTip = false
 

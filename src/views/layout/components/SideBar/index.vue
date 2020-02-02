@@ -9,7 +9,8 @@
       </el-radio-button>
     </el-radio-group>
     <el-menu
-      default-active="1-1"
+      @select="selectIndex"
+      :default-active="menuindex || '1-1'"
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#409EFF"
@@ -63,7 +64,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["routes", "name", "tags"])
+    ...mapGetters(["routes", "name", "tags","menuindex"])
   },
   created() {
     this.getRoutes();
@@ -124,6 +125,11 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    selectIndex(e){
+      console.log("选中函数")
+      console.log(e)
+      sessionStorage.menuindex = e
     }
   }
 };
