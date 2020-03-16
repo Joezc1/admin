@@ -1,7 +1,7 @@
 <template>
   <div class="topic-main">
     <div class="topic-header">
-      <searchBtns
+      <!-- <searchBtns
         :reqData="reqData"
         @handleChange="handleChange"
         @findProject="findProject"
@@ -12,7 +12,7 @@
         :selectedBtns="selectedBtns"
         :newBtn="false"
         :hiddencase="false"
-      ></searchBtns>
+      ></searchBtns> -->
     </div>
     <div class="topic-table">
       <el-table :data="tableData" size="medium" v-loading="loading">
@@ -200,77 +200,6 @@ export default {
       disabled: false,
       dialogVisible: false,
       loading: false,
-      options: [
-        {
-          value: "zhinan",
-          label: "指南",
-          children: [
-            {
-              value: "shejiyuanze",
-              label: "设计原则",
-              children: [
-                {
-                  value: "yizhi",
-                  label: "一致"
-                },
-                {
-                  value: "fankui",
-                  label: "反馈"
-                },
-                {
-                  value: "xiaolv",
-                  label: "效率"
-                },
-                {
-                  value: "kekong",
-                  label: "可控"
-                }
-              ]
-            },
-            {
-              value: "daohang",
-              label: "导航",
-              children: [
-                {
-                  value: "cexiangdaohang",
-                  label: "侧向导航"
-                },
-                {
-                  value: "dingbudaohang",
-                  label: "顶部导航"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      pickerOptions: {
-        hidden: false,
-        shortcuts: [
-          {
-            text: "今天",
-            onClick(picker) {
-              picker.$emit("pick", new Date());
-            }
-          },
-          {
-            text: "昨天",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit("pick", date);
-            }
-          },
-          {
-            text: "一周前",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", date);
-            }
-          }
-        ]
-      },
       // form表单
       ruleForm: {
         id: "",
@@ -322,62 +251,18 @@ export default {
         count: "",
         brower: ""
       },
-      inputBtns: [
-        {
-          name: "用户ID",
-          value: "userid",
-          hidden: false
-        },
-        {
-          name: "ID",
-          value: "topicid",
-          hidden: false
-        },
-        {
-          name: "话题摘要",
-          value: "abstract",
-          hidden: false
-        },
-        {
-          name: "评论数",
-          value: "comment",
-          hidden: false
-        },
-        {
-          name: "赞同数",
-          value: "agree",
-          hidden: false
-        },
-        {
-          name: "浏览量",
-          value: "brower",
-          hidden: false
-        },
-        {
-          name: "热度",
-          value: "heat",
-          hidden: false
-        },
-        {
-          name: "关注数",
-          value: "follow",
-          hidden: false
-        }
-      ],
-      selectedBtns: [
-        {
-          name: "标签",
-          value: "tag",
-          hidden: true,
-          data: [
-            { id: 0, name: "科技" },
-            { id: 1, name: "IT技术" },
-            { id: 2, name: "美食" }
-          ]
-        }
-      ],
       tableData: []
     };
+  },
+  computed:{
+    total:{
+      get:()=>{
+        return this.reqData.total
+      },
+      set: (newval)=>{
+        this.reqData.total = newval
+      }
+    }
   },
   methods: {
       // 创建websocket
@@ -501,7 +386,8 @@ export default {
         .then(res => {
           console.log(res);
           that.tableData = res.data;
-          that.reqData.pageCount = parseInt(res.pageCount);
+          // that.reqData.pageCount = parseInt(res.pageCount);
+          that.total = parseInt(res.pageCount)
           that.loading = false;
         })
         .catch(() => {
@@ -564,6 +450,11 @@ export default {
   components: {
     searchBtns: searchBtns,
     VueEditor
+  },
+   activated(){
+    alert("执行")
+    console.log(this.$store)
+    this.$store.state.admin.tags = []
   }
 };
 </script>

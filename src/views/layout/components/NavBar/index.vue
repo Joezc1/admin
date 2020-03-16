@@ -1,7 +1,15 @@
 <template>
   <div class="navbar-main">
-    <div class="navbar-left">hyknow后台管理系统</div>
-    <div class="navbar-right">
+    <div class="navbar-left clearfix">
+      <el-button small="size" class="collapse" icon="el-icon-s-unfold" @click="Collapse"></el-button>
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item> -->
+        <el-breadcrumb-item v-for="(item,index) in $route.matched" :key="index" :to="{ path: item.path }">{{item.meta.title}}</el-breadcrumb-item>
+      </el-breadcrumb>
+      <!-- <div class="left-title">hyknow后台管理系统</div> -->
+    </div>
+    <div class="navbar-right clearfix">
+      <el-button class="exit" icon="el-icon-switch-button" @click="Exit">退出系统</el-button>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
           <img src="@/assets/img/a.jpg" />
@@ -9,9 +17,8 @@
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a" icon="el-icon-setting">设置</el-dropdown-item>
           <el-dropdown-item command="b" icon="el-icon-circle-plus">狮子头</el-dropdown-item>
-          <el-dropdown-item command="c" icon="el-icon-circle-plus-outline">退出</el-dropdown-item>
-          <el-dropdown-item command="d" icon="el-icon-check">双皮奶</el-dropdown-item>
-          <el-dropdown-item command="e" icon="el-icon-circle-check">蚵仔煎</el-dropdown-item>
+          <el-dropdown-item command="c" icon="el-icon-check">双皮奶</el-dropdown-item>
+          <el-dropdown-item command="d" icon="el-icon-circle-check">蚵仔煎</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -19,30 +26,79 @@
 </template>
 
 <script>
+// import
 export default {
   name: "navbar",
+  // props: {
+  //   breadlist: {
+  //     type:Array
+  //   }
+  // },
   data() {
-    return {};
+    return {
+      breadlist: [],
+      isCollapse: false,
+    };
   },
-  methods: {
-    handleCommand(e) {
-      console.log(e);
-      if (e == "c") {
-        this.$store.commit("FedLogOut");
-        this.$router.push("/");
+  watch:{
+    $route:{
+      getBreadList(){
+        $route.matched.forEach(element => {
+          this.breadlist.push(element)
+        });
       }
     }
+  },
+  methods: {
+    Collapse(){
+      if(this.isCollapse == true){
+      this.isCollapse = false
+      this.$emit("isCollapse",false)
+      }else{
+      this.isCollapse = true
+      this.$emit("isCollapse",true)
+      }
+      // this.$emit("isCollapse",!iscollapse)
+    },
+    Exit(){
+      this.$store.commit("FedLogOut");
+        console.log(this.$store);
+        localStorage.removeItem("tags");
+        this.$store.state.admin.tags = [];
+        // console.log(this.$store)
+        this.$router.push("/");
+    },
+    handleCommand(e) {
+      console.log(e);
+    }
+  },
+  created(){
+    console.log("打印router对象")
+    this.$emit("isCollapse",this.isCollapse)
+    // console.log(this.$route.matched)
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.el-breadcrumb{
+  float: left;
+  margin-left: 20px;
+  line-height: 36px;
+}
+.collapse{
+  float: left;
+}
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
 }
 .el-icon-arrow-down {
   font-size: 12px;
+}
+.exit{
+  float: left;
+  margin-right: 20px;
 }
 .demonstration {
   display: block;
@@ -52,14 +108,16 @@ export default {
 }
 .navbar-main {
   width: 100%;
-  height: 10vh;
+  height: 8vh;
   overflow-x: hidden;
+  overflow-y: hidden;
+  border-bottom: 2px solid #8492a660;
   .navbar-left {
     box-sizing: border-box;
-    color: #ffffff;
+    color: #000000;
     float: left;
-    font-size: 19px;
-    line-height: 50px;
+    font-size: 17px;
+    line-height: 36px;
     font-weight: bold;
     margin-left: 16px;
   }
@@ -71,7 +129,6 @@ export default {
       height: 40px;
       border-radius: 50%;
       margin-right: 35px;
-      margin-top: 4px;
     }
   }
 }

@@ -1,11 +1,12 @@
 <template>
   <section class="app-main">
     <div class="app-main-container">
-      <transition name="el-zoom-in-top">
+      <!-- <transition name="el-zoom-in-top"> -->
         <keep-alive>
-          <router-view></router-view>
+          <router-view v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
-      </transition>
+        <router-view v-if="!$route.meta.keepAlive"></router-view>
+      <!-- </transition> -->
     </div>
   </section>
 </template>
@@ -16,7 +17,8 @@ export default {
   data() {
     return {};
   },
-  computed: {}
+  computed: {},
+  created(){}
 };
 </script>
 

@@ -315,7 +315,8 @@ export default {
       this.index = index;
     }
   },
-  created() {},
+  created() {
+  },
   mounted() {},
   components: {
     pieEchart: pieEchart,

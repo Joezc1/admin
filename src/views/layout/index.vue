@@ -1,10 +1,8 @@
 <template>
-  <div class="layout-main">
-    <NavBar class="layout-header"></NavBar>
+  <div class="layout-main clearfix">
+    <SideBar :isCollapse="isCollapse" class="body-left"></SideBar>
     <div class="layout-body">
-      <keep-alive>
-        <SideBar class="body-left"></SideBar>
-      </keep-alive>
+      <NavBar @isCollapse="getCollapse" class="layout-header"></NavBar>
       <Tags></Tags>
       <AppMain class="body-right"></AppMain>
     </div>
@@ -19,48 +17,63 @@ const Tags = () => import("./components/Tags");
 export default {
   name: "layout",
   data() {
-    return {};
+    return {
+      breadlist:[],
+      isCollapse:false
+    };
   },
   components: {
     AppMain: AppMain,
     SideBar: SideBar,
     NavBar: NavBar,
     Tags: Tags
+  },
+  methods:{
+    getCollapse(e){
+      this.isCollapse = e
+    }
+  },
+  created(){
+    // this.breadlist = this.$route.matched
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .layout-main {
+  display: flex;
   .layout-header {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    background-color: #545c64;
+    background-color: #ffffff;
   }
-  .layout-body {
-    width: 100%;
-    height: 90vh;
-    overflow-x: hidden;
-    .body-left {
+   .body-left {
       background-color: #545c64;
-      float: left;
-      width: 12%;
-      height: 95%;
-      margin: 7px 2px 2px 0;
+      // float: left;
+      // width: 13%;
+      height: 100vh;
+      // margin: 7px 2px 2px 0;
       box-sizing: border-box;
-      box-shadow: 5px 10px 12px 0 rgba(0, 0, 0, 0.3);
-      border-radius: 0 5px 5px 0;
+      // box-shadow: 5px 10px 12px 0 rgba(0, 0, 0, 0.3);
+      // border-radius: 0 5px 5px 0;
     }
+  .layout-body {
+    float: right;
+    min-width: 87%;
+    height: 100vh;
+    // float: left;
+    overflow-x: hidden;
+   
     .body-left:hover {
-      box-shadow: 15px 7px 12px 0 rgba(0, 0, 0, 0.4);
+      // box-shadow: 15px 7px 12px 0 rgba(0, 0, 0, 0.4);
     }
     .body-right {
-      margin: 7px 15px 15px 15px;
+      // margin: 7px 15px 15px 15px;
       float: right;
-      width: 85%;
-      height: 83%;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
+      width: 100%;
+      height: 82vh;
+      // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
       border-radius: 10px;
     }
     // .body-right:hover {

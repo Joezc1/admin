@@ -1,7 +1,7 @@
 <template>
   <div class="content-main">
     <div class="content-header">
-      <searchBtns
+      <!-- <searchBtns
         :reqData="reqData"
         @handleChange="handleChange"
         :inputBtns="inputBtns"
@@ -12,7 +12,7 @@
         :selectedBtns="selectedBtns"
         :newBtn="true"
         :hiddencase="true"
-      ></searchBtns>
+      ></searchBtns> -->
     </div>
 
     <div class="notice-table">
@@ -44,9 +44,9 @@
         </el-table-column>
         <el-table-column label="操作" width="230" fixed="right">
           <div class="btns" slot-scope="scope">
-            <el-button size="small" type="primary" @click="handleDetail(scope.$index, scope.row)">详情</el-button>
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button size="small" type="primary" @click="handleDetail(scope.$index, scope.row)" icon="el-icon-view"></el-button>
+            <el-button size="small" @click="handleEdit(scope.$index, scope.row)" icon="el-icon-edit"></el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" icon="el-icon-delete"></el-button>
           </div>
         </el-table-column>
       </el-table>
@@ -88,12 +88,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="发布作者" prop="author">
-              <el-input  placeholder="请输入发布作者" v-model="ruleForm.author"></el-input>
+              <el-input placeholder="请输入发布作者" v-model="ruleForm.author"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="公告类型" prop="type">
               <el-select v-model="ruleForm.type" placeholder="请选择类型">
                 <el-option
@@ -103,6 +103,22 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="公告封面" prop="cover">
+              <el-upload
+                class="avatar-uploader"
+                :action="defaultUrl"
+                :show-file-list="false"
+                :on-success="handleCoverSuccess"
+                :before-upload="beforeUploadCover"
+              >
+                <img v-if="ruleForm.cover" :src="ruleForm.cover" class="avatar" />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -206,7 +222,8 @@ export default {
         detail: "",
         id: "",
         video: "",
-        type: ""
+        type: "",
+        cover: ""
       },
       rules: {
         title: [
@@ -216,69 +233,12 @@ export default {
         author: [
           { required: true, message: "请输入公告作者", trigger: "blur" }
         ],
-        type: [
-          { required: true, message: "请选择公告类型", trigger: "blur" }
-        ],
+        type: [{ required: true, message: "请选择公告类型", trigger: "blur" }],
+        cover: [{ required: true, message: "请上传公告图片", trigger: "blur" }],
         detail: [{ required: true, message: "请输入公告详情", trigger: "blur" }]
       },
       dialogVisible: false,
       content: "", //这是富文本框内容
-      pickerOptions: {
-        hidden: false,
-        shortcuts: [
-          {
-            text: "今天",
-            onClick(picker) {
-              picker.$emit("pick", new Date());
-            }
-          },
-          {
-            text: "昨天",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit("pick", date);
-            }
-          },
-          {
-            text: "一周前",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", date);
-            }
-          }
-        ]
-      },
-      inputBtns: [
-        {
-          name: "ID",
-          value: "id",
-          hidden: false
-        },
-        {
-          name: "标题",
-          value: "title",
-          hidden: false
-        },
-        {
-          name: "作者",
-          value: "author",
-          hidden: false
-        }
-      ],
-      selectedBtns: [
-        {
-          hidden: false,
-          name: "标签",
-          value: "tag",
-          data: [
-            { id: 0, name: "科技" },
-            { id: 1, name: "IT技术" },
-            { id: 2, name: "美食" }
-          ]
-        }
-      ],
       tableData: []
     };
   },
@@ -289,12 +249,38 @@ export default {
   methods: {
     // 文件上传成功
     handleAvatarSuccess(res, file) {
-      console.log(res)
-      console.log(file)
+      console.log(res);
+      console.log(file);
       this.ruleForm.video = res.data.url;
       // this.ruleForm.video = URL.createObjectURL(file.raw);
       console.log("上传成功,打印文件地址");
       console.log(this.ruleForm.video);
+    },
+    // 上传图片封面
+    handleCoverSuccess(res, file) {
+      console.log(res);
+      console.log(file);
+      this.ruleForm.cover = res.data.url;
+      // this.ruleForm.video = URL.createObjectURL(file.raw);
+      console.log("上传成功,打印封面地址");
+      console.log(this.ruleForm.cover);
+    },
+    // 上传图片之前
+    beforeUploadCover(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+      // if (!isLt10M) {
+      //   this.$message.error("上传视频大小不能超过10MB哦!");
+      //   return false;
+      // }
     },
     // 上传之前
     beforeUploadVideo(file) {
@@ -387,7 +373,7 @@ export default {
             message: res.data.msg
           });
           that.dialogVisible = false;
-          that.getNoticeList()
+          that.getNoticeList();
         } else {
           that.$message({
             type: "error",
@@ -550,6 +536,29 @@ export default {
 
 <style lang="scss" scoped>
 .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+.avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
@@ -559,15 +568,15 @@ export default {
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
-.el-select{
+.el-select {
   float: left;
 }
-.el-form-item__content::after{
+.el-form-item__content::after {
   clear: both;
   font-size: 0;
   display: block;
   height: 0;
-  content: '';
+  content: "";
 }
 .avatar-uploader-icon {
   font-size: 28px;

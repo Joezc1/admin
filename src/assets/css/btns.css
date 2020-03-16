@@ -27,28 +27,11 @@
 .clearfix {
   zoom: 1;
 }
-.el-col-4{
-  padding-bottom: 15px;
-  box-sizing: border-box;
-}
-.el-col-3{
-  padding-bottom: 15px;
-  box-sizing: border-box;
-}
-.el-col-5{
-  padding-bottom: 15px;
-  box-sizing: border-box;
-}
-.el-col-6{
-  padding-bottom: 15px;
-  box-sizing: border-box;
-}
+
 .hidden{
   display: none;
 }
-.inputlabel{
-  width: 40%;
-}
+
 .header-btn{
   margin-left: 10px;
   box-sizing: border-box;

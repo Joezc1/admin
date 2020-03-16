@@ -1,6 +1,9 @@
 <template>
   <div class="login-main">
-    <div class="login-header">
+    <!-- <div class="stars" ref="stars"></div> -->
+    <!--背景层，不要删除，不然没有作用-->
+    <!-- <div class="img-wrap"> -->
+    <!-- <div class="login-header">
       <el-row type="flex" class="row-bg" justify="end">
         <el-col class="header-color clearfix" :span="3">
           <div class="title">不喜欢这颜色?</div>
@@ -15,38 +18,35 @@
           <el-button style="color: #666;" type="primary" plain @click="resetColor">重置</el-button>
         </el-col>
       </el-row>
-    </div>
-    <div class="login-body" :style="bodystyle">
-      <h6 class="login-title">用户登录</h6>
-      <el-form
-        size="medium "
-        :model="ruleForm"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="70px"
-        class="demo-ruleForm"
-      >
-        <el-form-item class="clearfix label" label="用户名" prop="name">
-          <el-input class="form-input" v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item class="clearfix label" label="密码" prop="password">
-          <el-input class="form-input" type="password" v-model="ruleForm.password"></el-input>
-        </el-form-item>
-        <el-form-item class="btns">
-          <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-          <el-button style="margin-right:56px;" @click="resetForm('ruleForm')">重置</el-button>
-        </el-form-item>
-      </el-form>
-      <div class="body-bottem clearfix">
-        <div class="bottem-left">注册</div>
-        <div class="bottem-right">忘记密码?</div>
+    </div>-->
+    <div class="login-body">
+      <h6 class="login-title">Login</h6>
+      <div class="body-two">
+        <div class="username clearfix">
+          <img class="username-img" src="../../assets/img/user.png" alt />
+          <input v-model="ruleForm.name" class="username-input" type="text" placeholder="username" />
+        </div>
+        <div class="password clearfix">
+          <img class="password-img" src="../../assets/img/password.png" alt />
+          <input
+            v-model="ruleForm.password"
+            type="password"
+            class="password-input"
+            placeholder="password"
+          />
+        </div>
+      </div>
+      <div class="body-three">
+        <button type="button" @click="login" class="login-btn">Login</button>
       </div>
     </div>
+    <!-- </div> -->
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import $ from "jquery";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 // @ is an alias to /src
 export default {
   name: "home",
@@ -89,6 +89,73 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["Login"]),
+    // login
+    login() {
+      let name = /^[a-zA-Z]{4,16}$/;
+      let password = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?]).*$/;
+      // alert(this.ruleForm.name)
+      if (this.ruleForm.name.trim() == "" && this.ruleForm.name.length == 0) {
+        this.$message.warning("请输入用户名");
+      } else if (
+        this.ruleForm.password.trim() == "" &&
+        this.ruleForm.password.length == 0
+      ) {
+        this.$message.warning("请输入密码");
+      } else if (!name.test(this.ruleForm.name)) {
+        const h = this.$createElement;
+        this.$notify({
+          title: "提示信息",
+          message: h(
+            "i",
+            { style: "color: teal" },
+            "用户名至少4-16个字符，由字母数字组成"
+          )
+        });
+        // this.$message.warning("至少8-16个字符，至少1个大写字母，1个小写字母和1个数字，其他可以是任意字符")
+      } else if (!password.test(this.ruleForm.password)) {
+        const h = this.$createElement;
+        this.$notify({
+          title: "提示信息",
+          message: h(
+            "i",
+            { style: "color: teal" },
+            "最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符@#$%^&*?"
+          )
+        });
+      } else {
+        let list = [];
+        localStorage.setItem("tags", JSON.stringify(list));
+        sessionStorage.menuindex = "1-1";
+        // this.Login(this.ruleForm)
+        this.$store.dispatch("Login", this.ruleForm).then((res, msg) => {
+          console.log("打印login结果");
+          console.log(res);
+          if (res) {
+            this.$router.push({
+              name: "dashboard"
+            });
+            // this.$message({
+            //   showClose: true,
+            //   message: msg,
+            //   type: "success"
+            // });
+          } else {
+            // this.$message({
+            //   showClose: true,
+            //   message: msg,
+            //   type: "warning"
+            // });
+            return false;
+          }
+        });
+        // this.sessionStorage.title = "仪表盘"
+        // this.$router.push("/data_analysis/analysis_list");
+        // this.$router.push({
+        //   name: 'dashboard'
+        // });
+      }
+    },
     // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -96,7 +163,7 @@ export default {
           // localStorage.removeItem('tags')
           let list = [];
           localStorage.setItem("tags", JSON.stringify(list));
-          sessionStorage.menuindex = '1-1'
+          sessionStorage.menuindex = "1-1";
           this.$router.push("/data_analysis/analysis_list");
         } else {
           console.log("error submit!!");
@@ -150,13 +217,45 @@ export default {
     ...mapGetters(["routes", "name"])
   },
   created() {
-    this.initTheme();
+    // this.initTheme();
+  },
+  mounted() {
+    // var stars = 800; /*星星的密集程度，数字越大越多*/
+    // var $stars = $(".stars");
+    // var r = 800; /*星星的看起来的距离,值越大越远,可自行调制到自己满意的样子*/
+    // for (var i = 0; i < stars; i++) {
+    //   var $star = $("<div/>").addClass("star");
+    //   // console.log($star);
+    //   $stars.append($star);
+    // }
+    // $(".star").each(function() {
+    //   var cur = $(this);
+    //   var s = 0.2 + Math.random() * 1;
+    //   var curR = r + Math.random() * 300;
+    //   cur.css({
+    //     transformOrigin: "0 0 " + curR + "px",
+    //     transform:
+    //       " translate3d(0,0,-" +
+    //       curR +
+    //       "px) rotateY(" +
+    //       Math.random() * 360 +
+    //       "deg) rotateX(" +
+    //       Math.random() * -50 +
+    //       "deg) scale(" +
+    //       s +
+    //       "," +
+    //       s +
+    //       ")"
+    //   });
+    // });
   },
   components: {}
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import url("../../assets/css/stars.css");
+
 .body-bottem {
   width: 100%;
   height: 30px;
@@ -192,7 +291,7 @@ body {
   height: 100%;
 }
 .login-main {
-  background: url("../../assets/img/backone.jpg") no-repeat;
+  // background: url("../../assets/img/backone.jpg") no-repeat;
   background-size: cover;
   padding: 20px;
   box-sizing: border-box;
@@ -203,7 +302,8 @@ body {
 
 .login-title {
   margin: 0 auto;
-  font-size: 23px;
+  font-size: 36px;
+  color: #ffffff;
   text-align: center;
   margin-top: 12px;
   box-sizing: border-box;
@@ -220,9 +320,10 @@ body {
   border: none;
 }
 .login-body {
-  border-radius: 8px;
+  // border-radius: 8px;
+  background: #00000060;
   height: 260px;
-  width: 417px;
+  width: 550px;
   margin: 0 auto;
   position: absolute;
   top: 20%; /*偏移*/
@@ -230,11 +331,76 @@ body {
   transform: translateY(-20%);
   transform: translateX(-50%);
   box-shadow: 0 2px 12px 2px rgba(0, 0, 0, 0.3);
-  opacity: 0.9;
+  // opacity: 0.5;
   font-size: 17px;
+  .body-two {
+    width: 100%;
+    .username {
+      padding: 20px 15% 0 15%;
+      box-sizing: border-box;
+      width: 100%;
+      .username-img {
+        width: 30px;
+        float: left;
+        height: 30px;
+      }
+      .username-input {
+        float: left;
+        border: none;
+        background: #ffffff00;
+        border-bottom: 2px solid #fff;
+        color: #fff;
+        width: 86%;
+        font-size: 25px;
+        line-height: 26px;
+        margin-left: 8px;
+      }
+      // .username-input::placeholder{
+      //   color: #ffffff;
+      // }
+    }
+    .password {
+      padding: 20px 15% 0 15%;
+      box-sizing: border-box;
+      width: 100%;
+      .password-img {
+        float: left;
+        width: 30px;
+        height: 30px;
+      }
+      .password-input {
+        color: #fff;
+        width: 86%;
+        font-size: 25px;
+        line-height: 26px;
+        float: left;
+        border: none;
+        background: #ffffff00;
+        border-bottom: 2px solid #fff;
+        margin-left: 8px;
+      }
+      // .password-input:focus{
+      //   border: 1px solid #000000;
+      // }
+    }
+  }
+  .body-three {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+    .login-btn {
+      width: 63%;
+      font-size: 23px;
+      border: none;
+      border-radius: 19px;
+      color: #fff;
+      background-image: linear-gradient(to right, #db3125 0%, #578bc3 100%);
+      height: 40px;
+    }
+  }
 }
 .login-body:hover {
-  box-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.7);
+  // box-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.7);
 }
 .header-color {
   .title {

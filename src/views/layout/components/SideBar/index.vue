@@ -1,13 +1,9 @@
 <template>
   <div>
-    <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-      <el-radio-button :label="false">
-        <i class="el-icon-s-grid"></i>
-      </el-radio-button>
-      <el-radio-button :label="true">
-        <i class="el-icon-menu"></i>
-      </el-radio-button>
-    </el-radio-group>
+    <!-- <div class="isColl">
+        <el-button type="primary" style="padding: 4px 8px;" size="small" @click="closeColl" v-if="isCollapse" plain icon="el-icon-s-unfold"></el-button>
+        <el-button type="primary" style="padding: 4px 8px;" size="small" @click="openColl" v-else plain icon="el-icon-s-fold"></el-button>
+    </div> -->
     <el-menu
       @select="selectIndex"
       :default-active="menuindex || '1-1'"
@@ -56,12 +52,18 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
+      isopen:true,
       labelflag: false,
-      isCollapse: false,
+      // isCollapse: false,
       arr: [],
       list: []
       // iconlist: ['el-icon-edit-outline','el-icon-warning-outline','el-icon-tickets','el-icon-user','el-icon-data-analysis']
     };
+  },
+  props:{
+    isCollapse:{
+      type:Boolean
+    }
   },
   computed: {
     ...mapGetters(["routes", "name", "tags","menuindex"])
@@ -73,9 +75,14 @@ export default {
     ...mapMutations("admin", {
       setTags: "SET_TAGS"
     }),
+    closeColl(){
+      this.isCollapse=false
+    },
+    openColl(){
+      this.isCollapse=true
+    },
     handleItem(item) {
       let list = this.tags;
-      console.log("打印list");
       let obj = list.find(e => {
         return e.name === item.name;
       });
@@ -87,8 +94,11 @@ export default {
         list.push(item);
       }
       console.log(this.tags);
-
+      console.log('打印store')
+      console.log(this.$store)
+      // sessionStorage.title=item.adminname
       localStorage.setItem("tags", JSON.stringify(list));
+      console.log("tags");
     },
     // 获取routes对象
     getRoutes() {
@@ -104,8 +114,7 @@ export default {
       }
       // 将routes存取到状态管理器
       this.$store.state.routes = this.list;
-      console.log("打印routes对象");
-      console.log(this.$store.state.routes);
+      // console.log(this.$store.state.routes);
     },
     formatIndex(ione, itwo) {
       let a = ione * 1 + 1;
@@ -136,6 +145,10 @@ export default {
 </script>
 
 <style lang="scss">
+.isColl{
+  padding: 30px 0 0 20px;
+  box-sizing: border-box;
+}
 .el-menu-item {
   font-size: 13px;
 }
@@ -156,7 +169,7 @@ a {
 }
 .hiddenscroll {
   overflow-x: hidden;
-  overflow-y: auto;
-  height: 74vh;
+  overflow-y: hidden;
+  height: 95vh;
 }
 </style>

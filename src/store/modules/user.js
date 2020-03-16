@@ -1,17 +1,24 @@
 import { login, logout, getInfo } from '@/api/login'
+import { Message, MessageBox } from 'element-ui'
+
+import router from "../../router"
 
 const user = {
   state: {
-    name: sessionStorage.getItem('name') || 'zzcc',
-    userId: sessionStorage.getItem('userId') || 0,
+    username: sessionStorage.getItem('name') || 'zzcc',
+    token: sessionStorage.getItem('token')
+    // password: sessionStorage.getItem('userId') || 0,
   },
 
   mutations: {
     SET_NAME: (state, name) => {
-      state.name = name
+      state.username = name
     },
     SET_USERID: (state, id) => {
       state.userId = id
+    },
+    SET_TOKEN: (state ,token) => {
+      state.token = token
     },
     // 前端 登出
     FedLogOut({ commit }) {
@@ -20,7 +27,8 @@ const user = {
       sessionStorage.removeItem('name')
       sessionStorage.removeItem('menuindex')
       let list = []
-      localStorage.setItem('tags',JSON.stringify(list))
+      localStorage.setItem('tags', JSON.stringify(list))
+    
       // localStorage.clear()
       // localStorage.removeItem('tags')
       // commit('SET_MENUS', [])
@@ -29,18 +37,26 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+   Login({ commit }, userInfo) {
+      const username = userInfo.name.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password)
+       login(username, userInfo.password)
           .then(response => {
-            const data = response.data
-            commit('SET_USERID', data.id);
-            commit('SET_NAME', data.name)
-            sessionStorage.setItem('login', 1)
-            sessionStorage.setItem('name', data.name)
-            sessionStorage.setItem('userId', data.id)
-            resolve()
+            if(response.success){
+              console.log("进行登录")
+              console.log(response)
+              // const data = response.data
+              commit('SET_NAME', response.userinfo.username)
+              commit('SET_TOKEN', response.token)
+              sessionStorage.setItem('login', true)
+              sessionStorage.setItem( 'token',response.token)
+              // sessionStorage.setItem('name', data.name)
+              Message.success(response.msg)
+              resolve(true)
+            }else{
+              Message.error(response.msg)
+              resolve(false)
+            }
           })
           .catch(error => {
             console.log(error)

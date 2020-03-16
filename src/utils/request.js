@@ -1,12 +1,14 @@
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
+import store from "../store"
 // 创建axios实例
 
 
 const service = axios.create({
   // baseURL: "http://39.106.159.120:8080/admin/api",
-  baseURL: "/api",
-//   baseURL: process.env.NODE_ENV === 'production' ? '' : '/api/', // api的base_url
+
+  // baseURL: "/api",
+  baseURL: process.env.VUE_APP_API_URL || '/admin/api', // api的base_url
   timeout: 20000, // 请求超时时间
   headers: {
     'Content-Type': 'application/json'
@@ -17,10 +19,10 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-	// config.headers.userId = store.getters.userid
-	// config.headers.name = store.getters.enable
-	// config.headers.language = store.getters.enable
-	// config.headers.Authorization = `JSESSIONID=${Cookies.get('JSESSIONID')}`
+    config.headers.token = store.getters.token
+    // config.headers.name = store.getters.enable
+    // config.headers.language = store.getters.enable
+    // config.headers.Authorization = `JSESSIONID=${Cookies.get('JSESSIONID')}`
     // if (c
     return config
   },
@@ -62,9 +64,9 @@ service.interceptors.response.use(
             type: 'warning'
           }
         ).then(() => {
-        //   store.dispatch('FedLogOut').then(() => {
-        //     location.reload() // 为了重新实例化vue-router对象 避免bug
-        //   })
+          //   store.dispatch('FedLogOut').then(() => {
+          //     location.reload() // 为了重新实例化vue-router对象 避免bug
+          //   })
         })
       } else if (res.data.code === '0') { // 0:不允许;
         Message({
@@ -73,6 +75,8 @@ service.interceptors.response.use(
           duration: 5 * 1000
         })
         return response.data
+      } else if (res.data.status == 403) {
+        Message.error(res.data.msg)
       } else {
         // Message({
         //   message: res.data.msg,
