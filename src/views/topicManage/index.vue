@@ -68,15 +68,15 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="230">
           <div class="btns" slot-scope="scope">
-            <el-button size="small" type="primary" @click="handleDetail(scope.$index, scope.row)">详情</el-button>
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button size="small" type="primary" @click="handleDetail(scope.$index, scope.row)" icon="el-icon-view"></el-button>
+            <el-button size="small" @click="handleEdit(scope.$index, scope.row)" icon="el-icon-edit"></el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" icon="el-icon-delete"></el-button>
           </div>
         </el-table-column>
       </el-table>
 
       <el-dialog
-        :title="'新增话题'"
+        :title="disabled==true?'话题详情':'编辑话题'"
         show-close
         top="20px"
         close-on-press-escape

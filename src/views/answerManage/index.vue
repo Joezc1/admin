@@ -65,7 +65,7 @@
       </el-table>
 
       <el-dialog
-        :title="'新增话题'"
+        :title="disabled==true?'回答详情':'编辑回答'"
         show-close
         top="20px"
         close-on-press-escape
@@ -180,7 +180,7 @@ import { parseTime } from "../../utils";
 import { VueEditor } from "vue2-editor";
 const searchBtns = () => import("@/components/searchBtns");
 // @ is an alias to /src
-import * as myAxios from "@/api/topicmanage";
+import * as myAxios from "@/api/answermanage";
 export default {
   name: "home",
   data() {

@@ -8,9 +8,9 @@ module.exports = {
             proxy: {
                 '/api': {
                     // 目标 API 地址
-                    target: 'http://39.106.159.120:8080/admin',
+    //                 target: 'http://39.106.159.120:8080/admin',
                     //测试环境
-    //                 target: 'http://localhost:8080/admin',
+                    target: 'http://localhost:8080/admin',
                     // 如果要代理 websockets
                     ws: false,
                     // 将主机标头的原点更改为目标URL

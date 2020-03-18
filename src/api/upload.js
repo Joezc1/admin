@@ -8,5 +8,5 @@ export function upload(data) {
   })
 }
 
-// export const defaultUrl = 'http://localhost:8080/admin/api/upload'
-export const defaultUrl = 'http://39.106.159.120:8080/admin/api/upload'
+export const defaultUrl = 'http://localhost:8080/admin/api/upload'
+// export const defaultUrl = 'http://39.106.159.120:8080/admin/api/upload'

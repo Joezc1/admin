@@ -16,3 +16,12 @@ export function finduser(data,id) {
         data
     })
 }
+
+// 获取话题列表
+export function getList(data){
+  return request({
+      url: '/admin/user/list',
+      data: data,
+      method: 'POST'
+  })
+}
