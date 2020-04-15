@@ -63,7 +63,6 @@ export default {
   overflow-y: hidden;
   overflow-x: auto;
   display: flex;
-  padding: 0 0 0 20px;
   box-sizing: border-box;
 }
 .el-tag {

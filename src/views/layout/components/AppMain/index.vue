@@ -12,13 +12,54 @@
 </template>
 
 <script>
+import * as myAxios from "../../../../api/login"
 export default {
   name: "AppMain",
   data() {
-    return {};
+    return {
+      _gap_time: ''
+    };
+  },
+  methods: {
+    async logout() {
+      await myAxios.logout({userid:this.$store.getters.userid}).then(res=>{
+        alert("登出")
+      })
+    },
+     beforeunloadHandler() {
+      this._beforeUnload_time = new Date().getTime();
+    },
+    unloadHandler(e) {
+      this._gap_time=new Date().getTime()-this._beforeUnload_time;
+        debugger
+        this.logout()
+        //判断是窗口关闭还是刷新
+        if(this._gap_time<=5){
+          //如果是登录状态，关闭窗口前，移除用户
+          // if(!this.showLoginButton){
+          //   $.ajax({
+          //     url: '/pictureweb/user/remove',
+          //     type: 'get',
+          //     async:false, //或false,是否异步
+             
+          //   })
+          // }
+        }
+
+    }
   },
   computed: {},
-  created(){}
+  created(){},
+   mounted() {
+    // window.addEventListener("beforeunload", e => this.beforeunloadHandler(e));
+    // window.addEventListener("unload", e => this.unloadHandler(e));
+  },
+  destroyed() {
+    // window.removeEventListener("beforeunload", e =>
+    //   this.beforeunloadHandler(e)
+    // );
+    // window.removeEventListener("unload", e => this.unloadHandler(e));
+  }
 };
 </script>
 

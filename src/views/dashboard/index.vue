@@ -1,11 +1,9 @@
 <template>
   <div class="dashboard-main">
-    <el-row type="flex" justify="space-between">
+    <!-- <el-row type="flex" justify="space-between">
       <el-col :span="8">
         <div class="cover darktored">
           <div class="timemd">
-            <!-- {{time}} -->
-            <!-- 2019-3-2 12:23 -->
             <div id="time"></div>
             <div class="line"></div>
             <div id="timed"></div>
@@ -18,51 +16,248 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <div class="header-item green" style="text-align:center">
-          <div class="pei-title">Ios登录比例</div>
-          <el-progress :color="colors" type="circle" :percentage="iosper"></el-progress>
-        </div>
+        <div class="header-item" style="text-align:center"></div>
       </el-col>
       <el-col :span="4">
-        <div class="header-item greentored" style="text-align:center">
-          <div class="pie-title">Android登录比例</div>
-          <el-progress :color="colors" type="circle" :percentage="androidper"></el-progress>
-        </div>
+        <div class="header-item" style="text-align:center"></div>
       </el-col>
       <el-col :span="4">
-        <div class="header-item green"></div>
+        <div class="header-item"></div>
       </el-col>
-      <el-col :span="4">
-        <div class="header-item darktored"></div>
+      <el-col>
+        <div class="header-item"></div>
       </el-col>
-    </el-row>
-    <el-row type="flex" justify="space-between" class="header-two">
-      <el-col :span="6">
-        <div class="header-item redtodark"></div>
-      </el-col>
-      <el-col :span="6">
-        <div class="header-item darktored"></div>
-      </el-col>
-      <el-col :span="6">
-        <div class="header-item green"></div>
-      </el-col>
-      <el-col :span="6">
-        <div class="header-item greentored"></div>
-      </el-col>
-    </el-row>
-    <el-row type="flex" justify="space-between" class="header-three">
-      <el-col :span="24">
-        <div class="header-item greentored"></div>
-      </el-col>
-    </el-row>
+    </el-row> -->
+    <div class="center">
+      <div class="center-left">
+        <barEchart :mychartOption="baroption"></barEchart>
+      </div>
+      <div class="center-right">
+        <pieEchart :mychartOption="pieoption"></pieEchart>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+var colors = ["#5793f3", "#d14a61", "#675bba"];
+
+const barEchart = () => import("../../components/barEchart");
+const pieEchart = () => import("../../components/pieEchart");
+
 export default {
   name: "dashboard",
   data() {
     return {
+      // 柱状图属性
+      baroption: {
+        color: colors,
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross"
+          }
+        },
+        grid: {
+          right: "20%"
+        },
+        toolbox: {
+          feature: {
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ["line", "bar"] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        legend: {
+          data: ["Android", "IOS", "登录量"]
+        },
+        xAxis: [
+          {
+            type: "category",
+            axisTick: {
+              alignWithLabel: true
+            },
+            data: [
+              "1月",
+              "2月",
+              "3月",
+              "4月",
+              "5月",
+              "6月",
+              "7月",
+              "8月",
+              "9月",
+              "10月",
+              "11月",
+              "12月"
+            ]
+          }
+        ],
+        yAxis: [
+          {
+            type: "value",
+            name: "Android",
+            min: 0,
+            max: 800,
+            position: "right",
+            axisLine: {
+              lineStyle: {
+                color: colors[0]
+              }
+            },
+            axisLabel: {
+              formatter: "{value} 次"
+            }
+          },
+          {
+            type: "value",
+            name: "IOS",
+            min: 0,
+            max: 800,
+            position: "right",
+            offset: 80,
+            axisLine: {
+              lineStyle: {
+                color: colors[1]
+              }
+            },
+            axisLabel: {
+              formatter: "{value} 次"
+            }
+          },
+          {
+            type: "value",
+            name: "登录量",
+            min: 0,
+            max: 800,
+            position: "left",
+            axisLine: {
+              lineStyle: {
+                color: colors[2]
+              }
+            },
+            axisLabel: {
+              formatter: "{value} 次"
+            }
+          }
+        ],
+        series: [
+          {
+            name: "Android",
+            type: "bar",
+            data: [
+              2.0,
+              4.9,
+              7.0,
+              23.2,
+              25.6,
+              76.7,
+              135.6,
+              162.2,
+              32.6,
+              20.0,
+              6.4,
+              3.3
+            ]
+          },
+          {
+            name: "IOS",
+            type: "bar",
+            yAxisIndex: 1,
+            data: [
+              2.6,
+              5.9,
+              9.0,
+              26.4,
+              28.7,
+              70.7,
+              175.6,
+              182.2,
+              48.7,
+              18.8,
+              6.0,
+              2.3
+            ]
+          },
+          {
+            name: "登录量",
+            type: "line",
+            yAxisIndex: 2,
+            data: [
+              200.0,
+              233.2,
+              322.3,
+              422.5,
+              622.3,
+              102.2,
+              202.3,
+              233.4,
+              232.0,
+              161.5,
+              121.0,
+              61.2
+            ]
+          }
+        ]
+      },
+      // 餅圖
+      pieoption: {
+        // 图表背景颜色
+        // 默认图表文字
+        textStyle: {
+          color: "#000000"
+        },
+        // 标题
+        title: {
+          text: "贺院知道微信小程序登录比例",
+          subtext: "",
+          textStyle: {
+            color: "#000000"
+          },
+          x: "center"
+        },
+        // 工具栏
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          x: "center",
+          y: "bottom",
+          textStyle: {
+            color: "#000000"
+          },
+          data: ["Android", "Ios"]
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: {
+              show: true,
+              type: ["pie", "funnel"]
+            },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        calculable: true,
+        series: [
+          {
+            // 鼠标显示标题
+            name: "小程序登录比例",
+            type: "pie",
+            radius: [30, 110],
+            center: ["50%", "50%"],
+            data: [
+              { value: 10, name: "Android" },
+              { value: 5, name: "Ios" }
+            ]
+          }
+        ]
+      },
       // ios设备登录信息
       // 安卓设备登录信息
       iosper: 70,
@@ -109,13 +304,17 @@ export default {
     }
   },
   created() {
-    if (this.myInter) {
-      clearInterval(this.myInter);
-    }
-    this.initTime();
+    console.log(this.$store)
+    // if (this.myInter) {
+    //   clearInterval(this.myInter);
+    // }
+    // this.initTime();
   },
   mounted() {},
-  components: {}
+  components: {
+    pieEchart,
+    barEchart
+  }
 };
 </script>
 
@@ -126,6 +325,9 @@ $green: #2bbfc1;
 $leftred: #614361;
 $rightred: #8d435c;
 
+.dashboard-main {
+  // background-image: linear-gradient(to right, $green 0%, #a0a08b 100%);
+}
 .pie-title {
   padding-top: 20px;
   box-sizing: border-box;
@@ -198,10 +400,11 @@ $rightred: #8d435c;
   // background-image: linear-gradient(to right, #db3125 0%,#578bc3 100%);
 }
 .el-col {
-  border-right: 1px solid #f5f5f5;
+  // border-right: 1px solid #f5f5f5;
 }
 .cover {
-  min-height: 185px;
+  min-height: 120px;
+  border-radius: 12px;
 }
 .header-item {
   min-height: 185px;

@@ -5,7 +5,7 @@ export default  // 内容管理
   path: '/content_manage',
   component: Layout,
   adminname: '内容管理',
-  name: 'content_manage',
+  // name: 'content_manage',
   icon: 'el-icon-tickets',
   meta: {
     title: '内容管理'

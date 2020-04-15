@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div class="echart-demo" id="echart-demo"></div>
+    <div class="echart-demo" id="echart-demo2"></div>
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     initEchart() {
-      var chart = document.getElementById("echart-demo");
+      var chart = document.getElementById("echart-demo2");
       this.myChart = this.echarts.init(chart);
       this.myChart.setOption(this.mychartOption);
       // this.myChart.hideLoading();

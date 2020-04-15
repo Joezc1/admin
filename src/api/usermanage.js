@@ -1,27 +1,35 @@
 import request from '../utils/request'
-
-export function upload(data) {
-  return request({
-    url: '/upload',
-    method: 'post',
-    data
-  })
+// 获取用户列表
+export function List(data){
+    return request({
+        url: '/wx/user/list',
+        data: data,
+        method: 'POST'
+    })
 }
-
-// 获取用户信息
-export function finduser(data,id) {
+// 获取用户详情
+export function Detail(id) {
     return request({
         url: `/user/${id}`,
-        method: 'post',
-        data
+        data: {},
+        method: 'post'
     })
 }
 
-// 获取话题列表
-export function getList(data){
-  return request({
-      url: '/admin/user/list',
-      data: data,
-      method: 'POST'
-  })
+
+// 删除用户
+export function Delete(id) {
+    return request({
+        url: `/delete/user/${id}`,
+        data:{},
+        method: 'post'
+    })
+}
+// 修改用户
+export function Update(data,id) {
+    return request({
+        url: `/update/user/${id}`,
+        data,
+        method: 'post'
+    })
 }

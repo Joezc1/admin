@@ -11,16 +11,19 @@ export function login(username, password) {
   })
 }
 
-export function getInfo() {
+// 获取用户信息
+export function getInfo(username) {
   return request({
-    url: 'resources/loadMenu',
-    method: 'get'
+    url: '/resources/loadMenu',
+    method: 'get',
+    params: {username}
   })
 }
 
-export function logout() {
+export function logout(data) {
   return request({
-    url: 'logout',
-    method: 'get'
+    url: '/admin/user/logout',
+    method: 'post',
+    data
   })
 }

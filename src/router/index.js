@@ -5,7 +5,7 @@ import dataanalysis from "./dataanalysis"
 import topicmanage from "./topicmanage"
 import answermanage from "./answermanage"
 import contentmanage from "./contentmanage"
-import usermanage from "./usermanage"
+import rolemanage from "./rolemanage"
 import dashboard from "./dashboard"
 
 Vue.use(VueRouter)
@@ -62,47 +62,12 @@ const routes = [
   topicmanage,
   answermanage,
   contentmanage,
-  usermanage,
-  // EchartDemo
-  {
-    path: '/echart_demo',
-    hidden: true,
-    component: () => import("../views/echartDemo"),
-    name: 'echart_demo'
-  }
+  rolemanage,
 ]
+
 const router = new VueRouter({
   routes
 })
 
-import NProgress from 'nprogress' // Progress 进度条
-import 'nprogress/nprogress.css' // Progress 进度条样式
-
-NProgress.configure({
-  showSpinner: false
-})
-
-
-router.beforeEach((to, from, next) => {
-  NProgress.start()
-  // if (store.getters.enable) {
-
-  // } else {
-  //   /* has no token*/
-  //   if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
-  //     next()
-  //   } else {
-  //     next('/login') // 否则全部重定向到登录页
-  //     // next()
-  //     NProgress.done()
-  //   }
-  // }
-  next()
-  NProgress.done()
-})
-
-router.afterEach(() => {
-  NProgress.done() // 结束Progress
-})
 
 export default router

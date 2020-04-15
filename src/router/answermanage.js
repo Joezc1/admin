@@ -6,7 +6,7 @@ export default // 回答管理
   adminname: '回答管理',
   icon: 'el-icon-warning-outline',
   component: Layout,
-  name: 'answer_manage',
+  // name: 'answer_manage',
   meta: {
     title: '回答管理'
   },

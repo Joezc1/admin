@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="body-three">
-        <button type="button" @click="login" class="login-btn">Login</button>
+        <button type="button" ref="login" @click="login" class="login-btn">Login</button>
       </div>
     </div>
     <!-- </div> -->
@@ -90,7 +90,6 @@ export default {
   },
   methods: {
     ...mapActions(["Login"]),
-    // login
     login() {
       let name = /^[a-zA-Z]{4,16}$/;
       let password = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?]).*$/;
@@ -127,7 +126,6 @@ export default {
         let list = [];
         localStorage.setItem("tags", JSON.stringify(list));
         sessionStorage.menuindex = "1-1";
-        // this.Login(this.ruleForm)
         this.$store.dispatch("Login", this.ruleForm).then((res, msg) => {
           console.log("打印login结果");
           console.log(res);
@@ -135,25 +133,10 @@ export default {
             this.$router.push({
               name: "dashboard"
             });
-            // this.$message({
-            //   showClose: true,
-            //   message: msg,
-            //   type: "success"
-            // });
           } else {
-            // this.$message({
-            //   showClose: true,
-            //   message: msg,
-            //   type: "warning"
-            // });
             return false;
           }
         });
-        // this.sessionStorage.title = "仪表盘"
-        // this.$router.push("/data_analysis/analysis_list");
-        // this.$router.push({
-        //   name: 'dashboard'
-        // });
       }
     },
     // 提交表单
@@ -220,34 +203,14 @@ export default {
     // this.initTheme();
   },
   mounted() {
-    // var stars = 800; /*星星的密集程度，数字越大越多*/
-    // var $stars = $(".stars");
-    // var r = 800; /*星星的看起来的距离,值越大越远,可自行调制到自己满意的样子*/
-    // for (var i = 0; i < stars; i++) {
-    //   var $star = $("<div/>").addClass("star");
-    //   // console.log($star);
-    //   $stars.append($star);
-    // }
-    // $(".star").each(function() {
-    //   var cur = $(this);
-    //   var s = 0.2 + Math.random() * 1;
-    //   var curR = r + Math.random() * 300;
-    //   cur.css({
-    //     transformOrigin: "0 0 " + curR + "px",
-    //     transform:
-    //       " translate3d(0,0,-" +
-    //       curR +
-    //       "px) rotateY(" +
-    //       Math.random() * 360 +
-    //       "deg) rotateX(" +
-    //       Math.random() * -50 +
-    //       "deg) scale(" +
-    //       s +
-    //       "," +
-    //       s +
-    //       ")"
-    //   });
-    // });
+    let that = this
+   document.addEventListener('keydown', (e) => {
+     if(e.keyCode==13){
+       that.login()
+     }
+      console.log(e.keyCode)
+      // 下面可以通过keyCode来添加键盘事件
+   })    
   },
   components: {}
 };

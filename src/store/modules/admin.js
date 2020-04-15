@@ -3,6 +3,7 @@ import router from '@/router'
 const admin = {
   state: {
     routes : router.options.routes,
+    // router.options.routes
     tags: JSON.parse(localStorage.getItem('tags')),
     menuindex: sessionStorage.getItem('menuindex'),
     title: sessionStorage.getItem('title'),
@@ -14,7 +15,8 @@ const admin = {
     },
     SET_LIST: (state, name) => {
       state.list = name
-    }
+    },
+
   },
 
  

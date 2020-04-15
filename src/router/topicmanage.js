@@ -4,7 +4,7 @@ export default  // 话题管理
 {
   path: '/topic_manage',
   component: Layout,
-  name: 'topic_manage',
+  // name: 'topic_manage',
   adminname: '话题管理',
   icon: 'el-icon-edit-outline',
   meta: {

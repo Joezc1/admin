@@ -1,53 +1,93 @@
 <template>
   <div class="topic-main">
     <div class="topic-header">
-      <!-- <searchBtns
-        :reqData="reqData"
-        @handleChange="handleChange"
-        @findProject="findProject"
-        @restProject="restProject"
-        :inputBtns="inputBtns"
-        :options="options"
-        :pickerOptions="pickerOptions"
-        :selectedBtns="selectedBtns"
-        :newBtn="false"
-        :hiddencase="false"
-      ></searchBtns> -->
+      <div class="header">
+        <el-row>
+          <el-col :span="2">
+            <el-button icon="el-icon-refresh" @click="getUsers"></el-button>
+          </el-col>
+          <el-col :span="2">
+            <span>Username:</span>
+          </el-col>
+          <el-col :span="3">
+            <el-input v-model="reqData.username" placeholder="请输入Username"></el-input>
+          </el-col>
+          <el-col :offset="13" :span="4">
+            <el-button size="small" type="primary" @click.native.stop="restReqdata" plain>重置</el-button>
+            <el-button size="small" type="primary" @click.native.stop="searchReqdata" plain>搜索</el-button>
+            <el-button size="small" type="primary" @click.native.stop="newProject" plain>新建</el-button>
+          </el-col>
+        </el-row>
+      </div>
     </div>
     <div class="topic-table">
       <el-table :data="tableData" size="medium" v-loading="loading">
-        <el-table-column label="username" width="100">
+        <el-table-column label="UID" width="250">
           <template slot-scope="scope">
-            <span>{{ scope.row.username }}</span>
+            <span>{{ scope.row.userid }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="用户等级" width="250">
+        <el-table-column label="UserName" width="100">
+          <template slot-scope="scope">
+            <span>{{ scope.row.nickname }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Cover" width="100">
+          <template slot-scope="scope">
+            <el-avatar :src="scope.row.cover"></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column label="Sex" width="100">
+          <template slot-scope="scope">
+            <span>{{ parseNull(scope.row.sex) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Birthday" width="120">
+          <template slot-scope="scope">
+            <span>{{parseTime(scope.row.birthday,'{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Grade" width="100">
+          <template slot-scope="scope">
+            <span>{{parseNull(scope.row.grade) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否已完善信息" width="150">
+          <template slot-scope="scope">
+            <span>{{ switchComplete(scope.row.iscomplete) }}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="用户等级" width="120">
           <template slot-scope="scope">
             <span>{{ scope.row.level }}</span>
           </template>
-        </el-table-column>
-          <el-table-column label="Email" width="300">
-          <template slot-scope="scope">
-            <span>{{ parseNull(scope.row.email) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="Tel" width="300">
-          <template slot-scope="scope">
-            <span>{{ parseNull(scope.row.tel) }}</span>
-          </template>
-        </el-table-column>
-       
+        </el-table-column>-->
+
         <el-table-column label="操作" fixed="right" width="230">
           <div class="btns" slot-scope="scope">
-            <el-button size="small" type="primary" @click="handleDetail(scope.$index, scope.row)" icon="el-icon-view"></el-button>
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)" icon="el-icon-edit"></el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" icon="el-icon-delete"></el-button>
+            <el-button
+              size="small"
+              type="primary"
+              @click="handleDetail(scope.$index, scope.row)"
+              icon="el-icon-view"
+            ></el-button>
+            <el-button
+              size="small"
+              @click="handleEdit(scope.$index, scope.row)"
+              icon="el-icon-edit"
+            ></el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              icon="el-icon-delete"
+            ></el-button>
           </div>
         </el-table-column>
       </el-table>
 
       <el-dialog
-        :title="'新增话题'"
+        :title="disabled?'用户详情':'编辑用户'"
         show-close
         top="20px"
         close-on-press-escape
@@ -66,77 +106,52 @@
         >
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="话题标题" prop="title">
-                <el-input v-model="ruleForm.title"></el-input>
+              <el-form-item label="UID" prop="userid">
+                <el-input disabled v-model="ruleForm.userid"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="话题作者" prop="userid">
-                <el-input v-model="ruleForm.userid"></el-input>
+              <el-form-item label="昵称" disabled prop="nickname">
+                <el-input disabled v-model="ruleForm.nickname"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
 
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="关注数" prop="follow">
-                <el-input v-model="ruleForm.follow"></el-input>
+              <el-form-item label="性别" prop="sex">
+                <el-select v-model="ruleForm.sex" placeholder="请选择性别">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="浏览量" prop="brower">
-                <el-input v-model="ruleForm.brower"></el-input>
+              <el-form-item label="出生日期" prop="birthday">
+                <el-date-picker format="yyyy-MM-dd" v-model="ruleForm.birthday" type="date" placeholder="选择日期"></el-date-picker>
               </el-form-item>
             </el-col>
           </el-row>
 
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="评论数" prop="comment">
-                <el-input v-model="ruleForm.comment"></el-input>
+              <el-form-item label="年级">
+                <el-select v-model="ruleForm.grade" placeholder="请选择年级">
+                  <el-option
+                    v-for="item in grades"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="赞同数" prop="agree">
-                <el-input v-model="ruleForm.agree"></el-input>
-              </el-form-item>
-            </el-col>
+           
           </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="话题热度" prop="heat">
-                <el-input v-model="ruleForm.heat"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="话题封面" prop="topiccover">
-                <el-input v-model="ruleForm.topiccover"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="24">
-              <el-form-item label="话题摘要" prop="abstract">
-                <el-input type="textarea" v-model="ruleForm.abstract"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="话题详情" prop="topic">
-                <vue-editor
-                  id="editor"
-                  useCustomImageHandler
-                  @image-added="handleImageAdded"
-                  v-model="ruleForm.topic"
-                  :disabled="disabled"
-                ></vue-editor>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
           <el-form-item>
             <el-button @click="handleUpdate('ruleForm')" type="primary">保存</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -160,9 +175,8 @@
 <script>
 import { parseTime } from "../../utils";
 import { VueEditor } from "vue2-editor";
-const searchBtns = () => import("@/components/searchBtns");
 // @ is an alias to /src
-import * as myAxios from "@/api/usermanage";
+import * as myAxios from "../../api/usermanage";
 export default {
   name: "home",
   data() {
@@ -187,55 +201,74 @@ export default {
       },
       // 表单规则
       rules: {
-        title: [
-          { required: true, message: "请输入话题标题", trigger: "blur" }
-          // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
-        ],
-        abstract: [
-          { required: true, message: "请输入话题简介", trigger: "blur" }
-        ],
-        topic: [{ required: true, message: "请输入话题详情", trigger: "blur" }],
-        topiccover: [
-          { required: true, message: "请上传话题封面", trigger: "blur" }
-        ],
-        userid: [{ required: true, message: "请输入用户", trigger: "blur" }],
-        comment: [{ required: true, message: "请输入评论数", trigger: "blur" }],
-        follow: [{ required: true, message: "请输入关注数", trigger: "blur" }],
-        agree: [{ required: true, message: "请输入赞同数", trigger: "blur" }],
-        heat: [{ required: true, message: "请输入热度", trigger: "blur" }],
-        brower: [{ required: true, message: "请输入公告详情", trigger: "blur" }]
+       
       },
       reqData: {
         pageNo: 1,
         pageSize: 10,
-        pageCount: ""
+        pageCount: "",
+        userid: "",
+        nickname: ""
       },
-      tableData: []
+      tableData: [],
+      // 下拉框选择
+      options: [
+        {
+          name: "男",
+          value: 0
+        },
+        {
+          name: "女",
+          value: 1
+        }
+      ],
+      grades: [
+        {
+          name: "大一",
+          value: 1
+        },
+        {
+          name: "大二",
+          value: 2
+        },
+         {
+          name: "大三",
+          value: 3
+        },
+         {
+          name: "大四",
+          value: 4
+        },
+         {
+          name: "其他",
+          value: 5
+        }
+      ],
     };
   },
-  computed:{
-    total:{
-      get:()=>{
-        return this.reqData.total
+  computed: {
+    total: {
+      get: () => {
+        return this.reqData.total;
       },
-      set: (newval)=>{
-        this.reqData.total = newval
+      set: newval => {
+        this.reqData.total = newval;
       }
     }
   },
   methods: {
-    parseNull(a){
-      return (a==''||a==null)?'空':a
+    switchComplete(type) {
+      switch (type) {
+        case 0:
+          return "尚未完善";
+          break;
+        default:
+          return "已经完善";
+          break;
+      }
     },
-      // 创建websocket
-    initWs() {
-      this.socket = new WebSocket("ws://localhost:8080/admin/api/ws");
-      this.socket.addEventListener("open", function(event) {
-        console.log("socket is open");
-      });
-      this.socket.addEventListener("message",function(event){
-         console.log('Message from server', event.data);
-      })
+    parseNull(a) {
+      return a == "" || a == null ? "空" : a;
     },
     parseTime,
     // 表单重置
@@ -252,7 +285,10 @@ export default {
       let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          that.updateTopic(this.topicid);
+          if(that.ruleForm.birthday!=null && that.ruleForm.birthday!=''){
+          that.ruleForm.birthday = that.parseTime(that.ruleForm.birthday,'{y}-{m}-{d}')
+          }
+          that.updateUser(this.ruleForm.userid);
         } else {
           console.log("error submit!!");
           return false;
@@ -272,22 +308,12 @@ export default {
     findProject() {
       console.log("打印reqdata");
       console.log(this.reqData);
-      this.getTopics();
+      this.getUsers();
     },
     // 清除reqdata
     clearReqdata(formName) {
-      this.reqData.id = "";
-      this.reqData.title = "";
-      this.reqData.abstract = "";
       this.reqData.userid = "";
-      this.reqData.createtime = "";
-      this.reqData.tag = "";
-      this.reqData.comment = "";
-      this.reqData.follow = "";
-      this.reqData.agree = "";
-      this.reqData.heat = "";
-      this.reqData.count = "";
-      this.reqData.brower = "";
+      this.reqData.nickname = "";
       this.disabled = false;
       this.$refs[formName].clearValidate();
     },
@@ -306,18 +332,18 @@ export default {
       console.log(value);
     },
     // 话题详情
-    async topicDetail(topicid) {
+    async userDeatil(userid) {
       let that = this;
-      await myAxios.topicDetail({ id: topicid }, topicid).then(res => {
+      await myAxios.Detail(userid).then(res => {
         console.log(res);
         that.ruleForm = res.data.data;
         console.log(that.ruleForm);
       });
     },
     // 修改话题
-    async updateTopic(topicid) {
+    async updateUser(id) {
       let that = this;
-      await myAxios.updateTopic(this.ruleForm, topicid).then(res => {
+      await myAxios.Update(this.ruleForm, id).then(res => {
         console.log(res);
         if (res.data.success) {
           that.$message({
@@ -326,30 +352,35 @@ export default {
           });
           that.clearReqdata("ruleForm");
           that.disabled = false;
-          that.getTopics();
+          that.getUsers();
           that.dialogVisible = false;
         }
       });
     },
     // 删除话题
-    async deleteTopic(topicid) {
-      let data = {};
-      data.id = topicid;
-      await myAxios.deleteTopic(data, topicid).then(res => {
+    async deleteUser(userid) {
+      let that = this;
+      await myAxios.Delete(userid).then(res => {
         console.log(res);
+        let data = res.data;
+        if (data.success) {
+          that.$message.success(data.msg);
+          that.getUsers()
+        }
       });
     },
     // 获取话题列表
-    async getTopics() {
+    async getUsers() {
       let that = this;
       this.loading = true;
+      console.log(this.reqData);
       await myAxios
-        .getList(this.reqData)
+        .List(this.reqData)
         .then(res => {
           console.log(res);
           that.tableData = res.data.list;
           // that.reqData.pageCount = parseInt(res.pageCount);
-          that.total = parseInt(res.pageCount)
+          that.total = parseInt(res.pageCount);
           that.loading = false;
         })
         .catch(() => {
@@ -358,14 +389,13 @@ export default {
     },
     handleDetail(index, row) {
       this.disabled = true;
-      this.topicDetail(row.id);
+      this.userDeatil(row.userid);
       this.dialogVisible = true;
     },
     handleEdit(index, row) {
-      this.topicid = row.id;
       this.disabled = false;
       this.dialogVisible = true;
-      this.topicDetail(row.id);
+      this.userDeatil(row.userid);
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -378,7 +408,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          that.deleteTopic(row.id);
+          that.deleteUser(row.userid);
         })
         .catch(() => {
           this.$message({
@@ -407,20 +437,28 @@ export default {
   },
   created() {
     // this.initWs()
-    this.getTopics();
+    this.getUsers();
   },
   components: {
     VueEditor
-  },
-   activated(){
-    alert("执行")
-    console.log(this.$store)
-    this.$store.state.admin.tags = []
   }
 };
 </script>
 
 <style lang="scss" scoped>
+$blue: #409eff;
+$white: #f5f5f5;
+$gray: #d9d9d9;
+.header {
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px dashed $gray;
+  border-radius: 5px;
+  span {
+    line-height: 40px;
+    font-size: 17px;
+  }
+}
 .topic-header {
   padding: 5px 0 0 10px;
   border-bottom: 1px dashed #ebeef5;

@@ -4,7 +4,7 @@ import Layout from '@/views/layout'
 export default {
     path: '/data_analysis',
     component: Layout,
-    name: 'data_analysis',
+    // name: 'data_analysis',
     adminname: '数据分析',
     icon: 'el-icon-data-analysis',
     meta: {

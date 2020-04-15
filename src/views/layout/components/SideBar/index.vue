@@ -3,12 +3,13 @@
     <!-- <div class="isColl">
         <el-button type="primary" style="padding: 4px 8px;" size="small" @click="closeColl" v-if="isCollapse" plain icon="el-icon-s-unfold"></el-button>
         <el-button type="primary" style="padding: 4px 8px;" size="small" @click="openColl" v-else plain icon="el-icon-s-fold"></el-button>
-    </div> -->
+    </div>-->
+    <div class="header-title" v-show="!isCollapse">贺院知道管理系统</div>
     <el-menu
       @select="selectIndex"
       :default-active="menuindex || '1-1'"
-      background-color="#545c64"
-      text-color="#fff"
+      background-color="rgb(48, 65, 86)"
+      text-color="rgb(191, 203, 217)"
       active-text-color="#409EFF"
       :class='{"el-menu-vertical-demo":true,"hiddenscroll":!isCollapse}'
       @open="handleOpen"
@@ -48,38 +49,52 @@
 </template>
 
 <script>
+import router from "../../../../router";
 import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      isopen:true,
+      isopen: true,
       labelflag: false,
       // isCollapse: false,
       arr: [],
-      list: []
+      list: [],
+      routes: []
       // iconlist: ['el-icon-edit-outline','el-icon-warning-outline','el-icon-tickets','el-icon-user','el-icon-data-analysis']
     };
   },
-  props:{
-    isCollapse:{
-      type:Boolean
+  props: {
+    isCollapse: {
+      type: Boolean
     }
   },
   computed: {
-    ...mapGetters(["routes", "name", "tags","menuindex"])
+    // ...mapGetters(["routes", "name", "tags", "menuindex"])
   },
   created() {
+    console.log("打印监听route");
+    this.routes = this.$store.getters.routes
+    console.log(router);
     this.getRoutes();
+    // console.log(router)
+  },
+  watch: {
+    $route: {
+      getBreadList() {
+        console.log("打印监听route");
+        console.log(router);
+      }
+    }
   },
   methods: {
     ...mapMutations("admin", {
       setTags: "SET_TAGS"
     }),
-    closeColl(){
-      this.isCollapse=false
+    closeColl() {
+      this.isCollapse = false;
     },
-    openColl(){
-      this.isCollapse=true
+    openColl() {
+      this.isCollapse = true;
     },
     handleItem(item) {
       let list = this.tags;
@@ -94,8 +109,8 @@ export default {
         list.push(item);
       }
       console.log(this.tags);
-      console.log('打印store')
-      console.log(this.$store)
+      console.log("打印store");
+      console.log(this.$store);
       // sessionStorage.title=item.adminname
       localStorage.setItem("tags", JSON.stringify(list));
       console.log("tags");
@@ -135,17 +150,23 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-    selectIndex(e){
-      console.log("选中函数")
-      console.log(e)
-      sessionStorage.menuindex = e
+    selectIndex(e) {
+      console.log("选中函数");
+      console.log(e);
+      sessionStorage.menuindex = e;
     }
   }
 };
 </script>
 
 <style lang="scss">
-.isColl{
+.header-title {
+  font-size: 21px;
+  margin-top: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+.isColl {
   padding: 30px 0 0 20px;
   box-sizing: border-box;
 }
@@ -170,6 +191,6 @@ a {
 .hiddenscroll {
   overflow-x: hidden;
   overflow-y: hidden;
-  height: 95vh;
+  height: 93vh;
 }
 </style>

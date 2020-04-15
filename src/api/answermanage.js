@@ -1,6 +1,6 @@
 import request from '../utils/request'
 // 获取话题列表
-export function getTopics(data){
+export function getAnswer(data){
     return request({
         url: '/answer/list',
         data: data,
@@ -8,16 +8,16 @@ export function getTopics(data){
     })
 }
 // 获取话题详情
-export function topicDetail(data,id) {
+export function answerDetail(id) {
     return request({
         url: `/answer/${id}`,
-        data: data,
+        data: {},
         method: 'post'
     })
 }
 
 // 新增话题
-export function newTopic(data) {
+export function newAnswer(data) {
     return request({
         url: '/save/answer',
         data,
@@ -26,7 +26,7 @@ export function newTopic(data) {
 }
 
 // 删除话题
-export function deleteTopic(data,id) {
+export function deleteAnswer(data,id) {
     return request({
         url: `/delete/answer/${id}`,
         data,
@@ -34,7 +34,7 @@ export function deleteTopic(data,id) {
     })
 }
 // 修改话题
-export function updateTopic(data,id) {
+export function updateAnswer(data,id) {
     return request({
         url: `/update/answer/${id}`,
         data,

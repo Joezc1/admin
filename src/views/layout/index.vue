@@ -18,8 +18,8 @@ export default {
   name: "layout",
   data() {
     return {
-      breadlist:[],
-      isCollapse:false
+      breadlist: [],
+      isCollapse: false
     };
   },
   components: {
@@ -28,12 +28,12 @@ export default {
     NavBar: NavBar,
     Tags: Tags
   },
-  methods:{
-    getCollapse(e){
-      this.isCollapse = e
+  methods: {
+    getCollapse(e) {
+      this.isCollapse = e;
     }
   },
-  created(){
+  created() {
     // this.breadlist = this.$route.matched
   }
 };
@@ -48,23 +48,23 @@ export default {
     box-sizing: border-box;
     background-color: #ffffff;
   }
-   .body-left {
-      background-color: #545c64;
-      // float: left;
-      // width: 13%;
-      height: 100vh;
-      // margin: 7px 2px 2px 0;
-      box-sizing: border-box;
-      // box-shadow: 5px 10px 12px 0 rgba(0, 0, 0, 0.3);
-      // border-radius: 0 5px 5px 0;
-    }
+  .body-left {
+    background-color:rgb(48, 65, 86);
+    // float: left;
+    // width: 13%;
+    height: 100vh;
+    // margin: 7px 2px 2px 0;
+    box-sizing: border-box;
+    // box-shadow: 5px 10px 12px 0 rgba(0, 0, 0, 0.3);
+    // border-radius: 0 5px 5px 0;
+  }
   .layout-body {
     float: right;
     min-width: 87%;
     height: 100vh;
     // float: left;
     overflow-x: hidden;
-   
+
     .body-left:hover {
       // box-shadow: 15px 7px 12px 0 rgba(0, 0, 0, 0.4);
     }
@@ -72,9 +72,8 @@ export default {
       // margin: 7px 15px 15px 15px;
       float: right;
       width: 100%;
-      height: 82vh;
+      height: 84vh;
       // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
     }
     // .body-right:hover {
     //   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.7);

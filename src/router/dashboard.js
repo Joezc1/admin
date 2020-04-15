@@ -4,7 +4,7 @@ import Layout from '@/views/layout'
 export default {
     path: '/dashboard_manage',
     component: Layout,
-    name: 'dashboard_manage',
+    // name: 'dashboard_manage',
     adminname: '首页',
     icon: 'el-icon-data-analysis',
     meta: {

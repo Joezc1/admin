@@ -1,18 +1,50 @@
 <template>
   <div class="topic-main">
     <div class="topic-header">
-      <!-- <searchBtns
-        :reqData="reqData"
-        @handleChange="handleChange"
-        @findProject="findProject"
-        @restProject="restProject"
-        :inputBtns="inputBtns"
-        :options="options"
-        :pickerOptions="pickerOptions"
-        :selectedBtns="selectedBtns"
-        :newBtn="false"
-        :hiddencase="false"
-      ></searchBtns> -->
+      <div class="topic-header">
+        <el-drawer
+          :with-header="false"
+          :visible.sync="drawer"
+          direction="rtl"
+          :before-close="handleClose"
+          size="20%"
+        >
+          <div class="drawer-main">
+            <el-row style="padding:20px 0 20px 0;" :gutter="20">
+              <el-col :span="7">
+                <div class="drawer-label">标题:</div>
+              </el-col>
+              <el-col :span="17">
+                <el-input v-model="reqData.title"></el-input>
+              </el-col>
+            </el-row>
+            <el-row style="padding:20px 0 20px 0;" :gutter="20">
+              <el-col :span="7">
+                <div class="drawer-label">作者UID:</div>
+              </el-col>
+              <el-col :span="17">
+                <el-input v-model="reqData.userid"></el-input>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <div class="btns">
+                  <el-button type="primary" @click.native.stop="restReqdata" plain>重置</el-button>
+                  <el-button type="primary" @click.native.stop="handleSearch" plain>搜索</el-button>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+        </el-drawer>
+        <el-row>
+          <el-col :span="2">
+            <el-button size="small" icon="el-icon-refresh" @click="refeshForm"></el-button>
+          </el-col>
+          <el-col :span="2" :offset="20">
+            <el-button plain size="small" @click="openDrawer">过滤</el-button>
+          </el-col>
+        </el-row>
+      </div>
     </div>
     <div class="topic-table">
       <el-table :data="tableData" size="medium" v-loading="loading">
@@ -29,6 +61,11 @@
         <el-table-column label="标题" width="300">
           <template slot-scope="scope">
             <span>{{ scope.row.title }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="100">
+          <template slot-scope="scope">
+            <span>{{ scope.row.type|switchType }}</span>
           </template>
         </el-table-column>
         <el-table-column label="热度" width="70">
@@ -66,11 +103,32 @@
             <span>{{parseTime(scope.row.updatetime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" width="230">
+        <el-table-column label="操作" fixed="right" width="260">
           <div class="btns" slot-scope="scope">
-            <el-button size="small" type="primary" @click="handleDetail(scope.$index, scope.row)" icon="el-icon-view"></el-button>
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)" icon="el-icon-edit"></el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" icon="el-icon-delete"></el-button>
+            <el-button
+              size="small"
+              type="primary"
+              @click="handleDetail(scope.$index, scope.row)"
+              icon="el-icon-view"
+            ></el-button>
+            <el-button
+              size="small"
+              @click="handleEdit(scope.$index, scope.row)"
+              icon="el-icon-edit"
+            ></el-button>
+            <el-button
+              :disabled="scope.row.type!=1"
+              size="small"
+              type="primary"
+              @click="handlePass(scope.$index,scope.row)"
+              icon="el-icon-check"
+            ></el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              icon="el-icon-delete"
+            ></el-button>
           </div>
         </el-table-column>
       </el-table>
@@ -146,6 +204,21 @@
           </el-row>
 
           <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="审核话题" prop="type">
+                <el-select v-model="ruleForm.type" placeholder="请选择">
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="话题摘要" prop="abstract">
                 <el-input type="textarea" v-model="ruleForm.abstract"></el-input>
@@ -196,6 +269,7 @@ export default {
   name: "home",
   data() {
     return {
+      drawer: false,
       topicid: "",
       disabled: false,
       dialogVisible: false,
@@ -214,6 +288,21 @@ export default {
         topic: "",
         topiccover: ""
       },
+      // 审核状态
+      typeList: [
+        {
+          name: "未审核",
+          value: 1
+        },
+        {
+          name: "审核通过",
+          value: 2
+        },
+        {
+          name: "审核未通过",
+          value: 3
+        }
+      ],
       // 表单规则
       rules: {
         title: [
@@ -232,48 +321,92 @@ export default {
         follow: [{ required: true, message: "请输入关注数", trigger: "blur" }],
         agree: [{ required: true, message: "请输入赞同数", trigger: "blur" }],
         heat: [{ required: true, message: "请输入热度", trigger: "blur" }],
-        brower: [{ required: true, message: "请输入公告详情", trigger: "blur" }]
+        brower: [{ required: true, message: "请输入公告详情", trigger: "blur" }],
+        type: [{ required: true, message: "选择话题状态", trigger: "blur" }]
+
       },
       reqData: {
-        id: "",
         title: "",
-        abstract: "",
         pageNo: 1,
         pageSize: 10,
         pageCount: "",
-        userid: "",
-        createtime: "",
-        tag: "",
-        comment: "",
-        follow: "",
-        agree: "",
-        heat: "",
-        count: "",
-        brower: ""
+        userid: ""
       },
       tableData: []
     };
   },
-  computed:{
-    total:{
-      get:()=>{
-        return this.reqData.total
+  filters: {
+    switchType(key) {
+      switch (key) {
+        case 1:
+          return "未审核";
+          break;
+        case 2:
+          return "审核通过";
+          break;
+        default:
+          return "未审核通过";
+          break;
+      }
+    }
+  },
+  computed: {
+    total: {
+      get: () => {
+        return this.reqData.total;
       },
-      set: (newval)=>{
-        this.reqData.total = newval
+      set: newval => {
+        this.reqData.total = newval;
       }
     }
   },
   methods: {
-      // 创建websocket
+    // 审核通过
+    async handlePass(index, row) {
+      let that = this;
+      row.type = 2;
+      await myAxios.updateTopic(row, row.id).then(res => {
+        if (res.data.success) {
+          that.$message({
+            message: res.data.msg,
+            type: "success"
+          });
+        } else {
+          that.$message({
+            message: res.data.msg,
+            type: "success"
+          });
+        }
+      });
+    },
+    restReqdata() {
+      this.reqData.title = "";
+      this.reqData.userid = "";
+    },
+    openDrawer() {
+      this.drawer = true;
+    },
+    handleClose(done) {
+      done();
+    },
+    handleSearch() {
+      this.getTopics();
+      this.drawer = true;
+    },
+    refeshForm() {
+      this.restReqdata();
+      this.getTopics();
+    },
+
+    // 创建websocket
     initWs() {
       this.socket = new WebSocket("ws://localhost:8080/admin/api/ws");
       this.socket.addEventListener("open", function(event) {
         console.log("socket is open");
       });
-      this.socket.addEventListener("message",function(event){
-         console.log('Message from server', event.data);
-      })
+      this.socket.addEventListener("message", function(event) {
+        console.log("Message from server", event.data);
+      });
     },
     parseTime,
     // 表单重置
@@ -314,18 +447,8 @@ export default {
     },
     // 清除reqdata
     clearReqdata(formName) {
-      this.reqData.id = "";
       this.reqData.title = "";
-      this.reqData.abstract = "";
       this.reqData.userid = "";
-      this.reqData.createtime = "";
-      this.reqData.tag = "";
-      this.reqData.comment = "";
-      this.reqData.follow = "";
-      this.reqData.agree = "";
-      this.reqData.heat = "";
-      this.reqData.count = "";
-      this.reqData.brower = "";
       this.disabled = false;
       this.$refs[formName].clearValidate();
     },
@@ -387,7 +510,7 @@ export default {
           console.log(res);
           that.tableData = res.data;
           // that.reqData.pageCount = parseInt(res.pageCount);
-          that.total = parseInt(res.pageCount)
+          that.total = parseInt(res.pageCount);
           that.loading = false;
         })
         .catch(() => {
@@ -429,7 +552,7 @@ export default {
     async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       // An example of using FormData
       // NOTE: Your key could be different such as:
-      // formData.append('file', file)
+      // formData.append('file', file);
       let that = this;
       var formData = new FormData();
       formData.append("file", file);
@@ -444,27 +567,45 @@ export default {
     }
   },
   created() {
-    this.initWs()
+    console.log("打印store");
+    console.log(this.$store);
     this.getTopics();
   },
   components: {
     searchBtns: searchBtns,
     VueEditor
   },
-   activated(){
-    alert("执行")
-    console.log(this.$store)
-    this.$store.state.admin.tags = []
+  activated() {
+    this.$store.state.admin.tags = [];
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.drawer-main {
+  padding: 50px 20px 50px 20px;
+  box-sizing: border-box;
+  height: 100vh;
+}
+.header {
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px dashed #d9d9d9;
+  border-radius: 5px;
+  span {
+    line-height: 40px;
+    font-size: 17px;
+  }
+}
 .topic-header {
-  padding: 5px 0 0 10px;
+  padding: 5px 0 7px 10px;
   border-bottom: 1px dashed #ebeef5;
   box-sizing: border-box;
 }
+.btns {
+  text-align: center;
+}
+
 .el-pagination {
   padding: 20px 0 0 0;
 }
