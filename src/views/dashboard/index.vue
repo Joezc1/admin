@@ -1,5 +1,6 @@
 <template>
   <div class="dashboard-main">
+    <h1 class="welcome">欢迎登录!</h1>
     <!-- <el-row type="flex" justify="space-between">
       <el-col :span="8">
         <div class="cover darktored">
@@ -27,20 +28,22 @@
       <el-col>
         <div class="header-item"></div>
       </el-col>
-    </el-row> -->
+    </el-row>-->
     <div class="center">
       <div class="center-left">
+        <pieEchart :mychartOption="pieoption" :key="refresh"></pieEchart>
+      </div>
+      <!-- <div class="center-right">
         <barEchart :mychartOption="baroption"></barEchart>
-      </div>
-      <div class="center-right">
-        <pieEchart :mychartOption="pieoption"></pieEchart>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
 var colors = ["#5793f3", "#d14a61", "#675bba"];
+import * as myaxios from "../../api/systyps"
+
 
 const barEchart = () => import("../../components/barEchart");
 const pieEchart = () => import("../../components/pieEchart");
@@ -49,6 +52,9 @@ export default {
   name: "dashboard",
   data() {
     return {
+      refresh: 0,
+      // 系统列表
+      sysList: [],
       // 柱状图属性
       baroption: {
         color: colors,
@@ -70,7 +76,7 @@ export default {
           }
         },
         legend: {
-          data: ["Android", "IOS", "登录量"]
+          data: ["Android", "IOS"]
         },
         xAxis: [
           {
@@ -125,21 +131,6 @@ export default {
             axisLabel: {
               formatter: "{value} 次"
             }
-          },
-          {
-            type: "value",
-            name: "登录量",
-            min: 0,
-            max: 800,
-            position: "left",
-            axisLine: {
-              lineStyle: {
-                color: colors[2]
-              }
-            },
-            axisLabel: {
-              formatter: "{value} 次"
-            }
           }
         ],
         series: [
@@ -178,25 +169,6 @@ export default {
               18.8,
               6.0,
               2.3
-            ]
-          },
-          {
-            name: "登录量",
-            type: "line",
-            yAxisIndex: 2,
-            data: [
-              200.0,
-              233.2,
-              322.3,
-              422.5,
-              622.3,
-              102.2,
-              202.3,
-              233.4,
-              232.0,
-              161.5,
-              121.0,
-              61.2
             ]
           }
         ]
@@ -252,8 +224,8 @@ export default {
             radius: [30, 110],
             center: ["50%", "50%"],
             data: [
-              { value: 10, name: "Android" },
-              { value: 5, name: "Ios" }
+              { value: 0, name: "Android" },
+              { value: 0, name: "Ios" }
             ]
           }
         ]
@@ -274,43 +246,30 @@ export default {
     };
   },
   methods: {
-    initTime() {
-      this.myInter = setInterval(function() {
-        var time = new Date();
-        var year = time.getFullYear(); //获取年份
-        var month = time.getMonth() + 1; //获取月份
-        var day = time.getDate(); //获取日期
-        var hour = checkTime(time.getHours()); //获取时
-        var minite = checkTime(time.getMinutes()); //获取分
-        var second = checkTime(time.getSeconds()); //获取秒
-        /****当时、分、秒、小于10时，则添加0****/
-        function checkTime(i) {
-          if (i < 10) return "0" + i;
-          return i;
-        }
-        var box = document.getElementById("time");
-        var boxd = document.getElementById("timed");
-        var boxtwo = document.getElementById("time-hour");
-        var boxthree = document.getElementById("time-time");
-        var boxfour = document.getElementById("time-second");
-        // console.log(this.$refs)
-        box.innerText = month;
-        boxd.innerText = day;
-        // console.log( box.innerText)
-        boxtwo.innerText = hour + ":";
-        boxthree.innerText = minite + ":";
-        boxfour.innerText = second;
-      }, 1000);
+    getList(){
+      let that = this
+      myaxios.getSystem().then(res => {
+        console.log(that.sysList)
+        that.pieoption.series[0].data[0].value = res.ios
+        that.pieoption.series[0].data[1].value = res.and
+      this.refresh++;
+
+        console.log(that.pieoption.series)
+      })
     }
   },
   created() {
-    console.log(this.$store)
+    console.log(this.$store);
+    this.getList()
+
     // if (this.myInter) {
     //   clearInterval(this.myInter);
     // }
     // this.initTime();
   },
-  mounted() {},
+  mounted() {
+    
+  },
   components: {
     pieEchart,
     barEchart
@@ -325,7 +284,35 @@ $green: #2bbfc1;
 $leftred: #614361;
 $rightred: #8d435c;
 
+.welcome {
+  width: 200px;
+  height: 40px;
+  // animation: welcome 3s;
+  color: #2bbfc1;
+  // -webkit-animation:myfirst 5s; /* Safari and Chrome */
+}
+
+@keyframes welcome {
+  from {
+    margin-left: 50vw;
+    color: #000000;
+  }
+  to {
+    margin-left: 0px;
+    color: #2bbfc1;
+  }
+}
+
+// @-webkit-keyframes welcome /* Safari and Chrome */
+// {
+// 	from {
+//   background:red;
+//   }
+// 	to {bmargin-left: 0px;}
+// }
+
 .dashboard-main {
+  position: relative;
   // background-image: linear-gradient(to right, $green 0%, #a0a08b 100%);
 }
 .pie-title {

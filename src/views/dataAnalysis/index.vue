@@ -22,7 +22,7 @@
             <div>折线图</div>
           </div>
         </el-col>
-        <el-col class="box" :span="2">
+        <!-- <el-col class="box" :span="2">
           <div
             :class="{'box-item':true,'clearfix':true,'selected':index==3}"
             @click="changeIndex(3)"
@@ -31,25 +31,29 @@
             <img v-else src="../../assets/img/bar.png" />
             <div>柱状图</div>
           </div>
-        </el-col>
+        </el-col> -->
       </el-row>
     </div>
-    <pieEchart v-if="index==1" :mychartOption="pieoption"></pieEchart>
-    <lineEchart v-if="index==2" :mychartOption="lineoption"></lineEchart>
-    <barEchart v-if="index==3" :mychartOption="baroption"></barEchart>
+    <pieEchart v-if="index==1" :key="refresh" :mychartOption="pieoption"></pieEchart>
+    <lineEchart v-if="index==2" :key="refresh" :mychartOption="lineoption"></lineEchart>
+    <!-- <barEchart v-if="index==3" :key="refresh" :mychartOption="baroption"></barEchart> -->
   </div>
 </template>
 
 <script>
 // 柱状图颜色
 var colors = ["#5793f3", "#d14a61", "#675bba"];
-
+import * as myAxios from "../../api/systyps";
 const pieEchart = () => import("../../components/pieEchart");
 const barEchart = () => import("../../components/barEchart");
 const lineEchart = () => import("../../components/lineEchart");
 export default {
   data() {
     return {
+      refresh: 0,
+      // tag列表
+      tagnameList: [],
+      tagList: [],
       // 判断当前选中的图表下标
       index: 1,
       // 饼图属性
@@ -61,8 +65,8 @@ export default {
         },
         // 标题
         title: {
-          text: "南丁格尔",
-          subtext: "纯属虚构",
+          text: "话题占比",
+          subtext: "",
           textStyle: {
             color: "#000000"
           },
@@ -80,14 +84,14 @@ export default {
             color: "#000000"
           },
           data: [
-            "rose1",
-            "rose2",
-            "rose3",
-            "rose4",
-            "rose5",
-            "rose6",
-            "rose7",
-            "rose8"
+            // "软件测试",
+            //  "硬件开发",
+            //  "后端开发",
+            //   "前端开发",
+            //   "数据库管理员",
+            //  "算法设计",
+            // "UI设计",
+            //  "医药卫生"
           ]
         },
         toolbox: {
@@ -113,14 +117,14 @@ export default {
             center: ["50%", "50%"],
             roseType: "area",
             data: [
-              { value: 10, name: "rose1" },
-              { value: 5, name: "rose2" },
-              { value: 15, name: "rose3" },
-              { value: 25, name: "rose4" },
-              { value: 20, name: "rose5" },
-              { value: 35, name: "rose6" },
-              { value: 30, name: "rose7" },
-              { value: 40, name: "rose8" }
+              // { value: 10, name: "软件测试" },
+              // { value: 5, name: "硬件开发" },
+              // { value: 15, name: "后端开发" },
+              // { value: 25, name: "前端开发" },
+              // { value: 20, name: "数据库管理员" },
+              // { value: 35, name: "算法设计" },
+              // { value: 30, name: "UI设计" },
+              // { value: 40, name: "医药卫生" }
             ]
           }
         ]
@@ -128,7 +132,14 @@ export default {
       // 柱状图属性
       baroption: {
         color: colors,
-
+        title: {
+          text: "话题发表量",
+          subtext: "",
+          textStyle: {
+            color: "#000000"
+          },
+          x: "center"
+        },
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -146,7 +157,7 @@ export default {
           }
         },
         legend: {
-          data: ["蒸发量", "降水量", "平均温度"]
+          data: ["蒸发量", "降水量"]
         },
         xAxis: [
           {
@@ -201,21 +212,6 @@ export default {
             axisLabel: {
               formatter: "{value} ml"
             }
-          },
-          {
-            type: "value",
-            name: "温度",
-            min: 0,
-            max: 25,
-            position: "left",
-            axisLine: {
-              lineStyle: {
-                color: colors[2]
-              }
-            },
-            axisLabel: {
-              formatter: "{value} °C"
-            }
           }
         ],
         series: [
@@ -255,30 +251,19 @@ export default {
               6.0,
               2.3
             ]
-          },
-          {
-            name: "平均温度",
-            type: "line",
-            yAxisIndex: 2,
-            data: [
-              2.0,
-              2.2,
-              3.3,
-              4.5,
-              6.3,
-              10.2,
-              20.3,
-              23.4,
-              23.0,
-              16.5,
-              12.0,
-              6.2
-            ]
           }
         ]
       },
       // 折线图属性
       lineoption: {
+        title: {
+          text: "",
+          subtext: "",
+          textStyle: {
+            color: "#000000"
+          },
+          x: "center"
+        },
         xAxis: {
           type: "category",
           boundaryGap: false,
@@ -302,7 +287,7 @@ export default {
         },
         series: [
           {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            data: [23, 12, 34, 45, 55, 2, 23],
             type: "line",
             areaStyle: {}
           }
@@ -313,11 +298,35 @@ export default {
   methods: {
     changeIndex(index) {
       this.index = index;
+    },
+    async getList() {
+      let that = this;
+      let res = await myAxios.getTags();
+      let list = res.list;
+      let taglist = [];
+      let datalist = [];
+
+      list.forEach((element, index, arr) => {
+        taglist.push(element.name);
+        datalist.push({
+          value: element.num,
+          name: element.name
+        });
+        // let obj = {
+        //   name: element,
+        //   value: ''
+        // }
+      });
+      this.pieoption.legend.data = taglist;
+      this.pieoption.series[0].data = datalist;
+      this.refresh++;
+      console.log(this.pieoption);
     }
   },
-  created() {
+  created() {},
+  mounted() {
+    this.getList();
   },
-  mounted() {},
   components: {
     pieEchart: pieEchart,
     barEchart: barEchart,

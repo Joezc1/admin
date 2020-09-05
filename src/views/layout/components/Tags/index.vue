@@ -40,11 +40,12 @@ export default {
       console.log(tag);
       this.taglist.splice(this.taglist.indexOf(tag), 1);
       //   this.$store.commit('SET_TAGS',this.taglist)
-      localStorage.setItem("tags", JSON.stringify(this.taglist));
+      // localStorage.setItem("tags", JSON.stringify(this.taglist));
+      this.$store.commit("SET_TAGS",this.taglist)
     }
   },
   created() {
-    this.taglist = this.tags;
+    this.taglist = this.$store.getters.tags;
     console.log("打印tags-list");
     console.log(this.tag);
     // this.stitle = this.title;

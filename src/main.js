@@ -4,7 +4,7 @@ import './plugins/element.js'
 import router from './router'
 import store from './store'
 import './assets/css/btns.css'
-// import './permission'
+import './permission'
 import echarts from 'echarts'
 
 

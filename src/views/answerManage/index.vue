@@ -1,8 +1,74 @@
+<style lang="scss" scoped>
+.drawer-main {
+  padding: 30px 20px 50px 20px;
+  box-sizing: border-box;
+  height: 100vh;
+}
+.header {
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px dashed #d9d9d9;
+  border-radius: 5px;
+  span {
+    line-height: 40px;
+    font-size: 17px;
+  }
+}
+.topic-header {
+  // positio;
+  padding: 5px 0 7px 10px;
+  border-bottom: 1px dashed #ebeef5;
+  box-sizing: border-box;
+}
+.btns {
+  text-align: center;
+}
+
+.el-pagination {
+  padding: 20px 0 0 0;
+}
+.header-label {
+  font-size: 17px;
+}
+
+.drawer-header {
+  border-bottom: 1px solid #55555520;
+  padding: 0 0 10px 0;
+  box-sizing: border-box;
+  .drawer-left {
+    float: left;
+    display: flex;
+    i {
+      line-height: 24px;
+    }
+    div {
+    }
+  }
+  .drawer-right {
+    float: right;
+    i {
+    }
+  }
+}
+.drawer-label{
+  line-height: 40px;
+}
+.drawer-input {
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  .btns {
+    margin-top: 20px;
+    box-sizing: border-box;
+  }
+}
+</style>
+
 <template>
   <div class="topic-main">
-    
     <div class="topic-header">
-       <el-drawer
+      <el-drawer
         :with-header="false"
         :visible.sync="drawer"
         direction="rtl"
@@ -10,62 +76,68 @@
         size="20%"
       >
         <div class="drawer-main">
-          <el-row style="padding:20px 0 20px 0;" :gutter="20">
-            <el-col :span="7">
-              <div class="drawer-label">topicid:</div>
-            </el-col>
-            <el-col :span="17">
-              <el-input v-model="reqData.topicid"></el-input>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <div class="btns">
-                <el-button type="primary" @click.native.stop="restReqdata" plain>重置</el-button>
-                <el-button type="primary" @click.native.stop="handleSearch" plain>搜索</el-button>
-              </div>
-            </el-col>
-          </el-row>
+          <div class="drawer-header clearfix">
+            <div class="drawer-left">
+              <i class="el-icon-warning-outline"></i>
+              <div class="drawer-title">搜索回答</div>
+            </div>
+            <div class="drawer-right">
+              <i class="el-icon-close" @click="drawer=false"></i>
+            </div>
+          </div>
+
+          <div class="drawer-input">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <div class="drawer-label">话题ID:</div>
+              </el-col>
+              <el-col :span="16">
+                <el-input v-model="reqData.topicid"></el-input>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <div class="btns">
+                  <el-button size="small" type="primary" @click.native.stop="restReqdata" plain>重置</el-button>
+                  <el-button size="small" type="primary" @click.native.stop="handleSearch" plain>搜索</el-button>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
         </div>
       </el-drawer>
       <el-row>
         <el-col :span="2">
-          <el-button icon="el-icon-refresh" @click="refeshForm"></el-button>
+          <el-button size="small" icon="el-icon-refresh" @click="refeshForm"></el-button>
         </el-col>
         <el-col :span="2" :offset="20">
-          <el-button plain @click="openDrawer">过滤</el-button>
+          <el-button size="small" type="success" icon="el-icon-search" @click="openDrawer"></el-button>
         </el-col>
       </el-row>
     </div>
 
-    
     <div class="topic-table">
-      <el-table :data="tableData" size="medium" v-loading="loading">
+      <el-table :data="tableData" size="small" v-loading="loading">
         <el-table-column label="ID" width="100">
           <template slot-scope="scope">
             <span>{{ scope.row.id }}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="摘要" width="250">
+        <el-table-column label="摘要" width="250">
           <template slot-scope="scope">
             <span>{{ scope.row.abstract }}</span>
           </template>
-        </el-table-column>-->
+        </el-table-column>
         <el-table-column label="赞同数" width="70">
           <template slot-scope="scope">
             <span>{{ scope.row.agree }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="关注数" width="70">
+        <!-- <el-table-column label="关注数" width="70">
           <template slot-scope="scope">
             <span>{{ scope.row.follow }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="评论数" width="70">
-          <template slot-scope="scope">
-            <span>{{ scope.row.comments }}</span>
-          </template>
-        </el-table-column>
+          </template> -->
+        <!-- </el-table-column> -->
         <el-table-column label="话题编号" width="100">
           <template slot-scope="scope">
             <span>{{ scope.row.topicid }}</span>
@@ -76,14 +148,10 @@
             <span>{{scope.row.userid}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="发布时间" width="200">
-          <template slot-scope="scope">
-            <span>{{parseTime(scope.row.createtime) }}</span>
-          </template>
-        </el-table-column>
+
         <el-table-column label="修改时间" width="200">
           <template slot-scope="scope">
-            <span>{{parseTime(scope.row.updatetime) }}</span>
+            <span>{{parseTime(scope.row.createtime) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="230">
@@ -124,7 +192,7 @@
         close-on-press-escape
         @close="closeDialog"
         :visible.sync="dialogVisible"
-        width="80%"
+        width="60%"
         center
       >
         <el-form
@@ -138,7 +206,12 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="回答内容" prop="answer">
-                <el-input type="textarea" v-model="ruleForm.answer"></el-input>
+                <!-- <el-input type="textarea" v-model="ruleForm.answer"></el-input> -->
+                    <vue-editor
+                  id="editor"
+                  v-model="ruleForm.answer"
+                  :disabled="disabled"
+                ></vue-editor>
               </el-form-item>
             </el-col>
           </el-row>
@@ -148,21 +221,14 @@
               <el-form-item label="赞同数" prop="agree">
                 <el-input v-model="ruleForm.agree"></el-input>
               </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="关注数" prop="follow">
-                <el-input v-model="ruleForm.follow"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="12">
+            </el-col>         
+             <!-- <el-col :span="12">
               <el-form-item label="评论数" prop="comments">
                 <el-input v-model="ruleForm.comments"></el-input>
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-row>
+
 
           <el-form-item>
             <el-button @click="handleUpdate('ruleForm')" type="primary">保存</el-button>
@@ -218,7 +284,7 @@ export default {
         title: "",
         pageNo: 1,
         pageSize: 10,
-        pageCount: ""
+        pageCount: 1
       },
       tableData: []
     };
@@ -237,9 +303,9 @@ export default {
       this.getList();
       this.drawer = true;
     },
-    refeshForm(){
-      this.restReqdata()
-      this.getList()
+    refeshForm() {
+      this.restReqdata();
+      this.getList();
     },
 
     // 创建websocket
@@ -338,9 +404,22 @@ export default {
     // 删除话题
     async deleteAnswer(id) {
       let data = {};
-      data.id = topicid;
+      let that = this
+      data.id = id;
       await myAxios.deleteAnswer(data, id).then(res => {
         console.log(res);
+        if(res.success){
+           that.$message({
+            message: res.msg,
+            type: "success"
+          });
+          that.getList()
+        }else{
+           that.$message({
+            message: res.msg,
+            type: "error"
+          });
+        }
       });
     },
     // 获取话题列表
@@ -418,36 +497,3 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.drawer-main {
-  padding: 50px 20px 50px 20px;
-  box-sizing: border-box;
-  height: 100vh;
-}
-.header {
-  padding: 10px;
-  box-sizing: border-box;
-  border: 1px dashed #d9d9d9;
-  border-radius: 5px;
-  span {
-    line-height: 40px;
-    font-size: 17px;
-  }
-}
-.topic-header {
-  padding: 5px 0 7px 10px;
-  border-bottom: 1px dashed #ebeef5;
-  box-sizing: border-box;
-}
-.btns{
-  text-align: center;
-}
-
-
-.el-pagination {
-  padding: 20px 0 0 0;
-}
-.header-label {
-  font-size: 17px;
-}
-</style>

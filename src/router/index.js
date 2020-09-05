@@ -46,6 +46,14 @@ const routes = [
     component: () => import('../views/login')
   },
   {
+    path: '/404',
+    hidden: true,//是否显示
+    component: () => import('../views/404'),
+    meta: {
+      title: '404'
+    },
+  },
+  {
     path: '/Layout',
     name: 'Layout',
     hidden: true,
@@ -63,6 +71,12 @@ const routes = [
   answermanage,
   contentmanage,
   rolemanage,
+   // 404
+   {
+    path: '*',
+    hidden: true,
+    redirect: '/404'    
+  },
 ]
 
 const router = new VueRouter({

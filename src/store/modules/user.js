@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/login'
 import { Message, MessageBox } from 'element-ui'
 import * as mock from "../../mock/data"
+
 import * as routerdate from "../../mock/router"
 
 import router from "../../router"
@@ -103,7 +104,7 @@ const user = {
   actions: {
     // 登录,获取菜单
    Login({ commit }, userInfo) {
-      const username = userInfo.name.trim()
+      const username = userInfo.username
       return new Promise((resolve, reject) => {
        login(username, userInfo.password)
           .then(response => {

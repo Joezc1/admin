@@ -23,11 +23,11 @@
       <h6 class="login-title">Login</h6>
       <div class="body-two">
         <div class="username clearfix">
-          <img class="username-img" src="../../assets/img/user.png" alt />
-          <input v-model="ruleForm.name" class="username-input" type="text" placeholder="username" />
+          <img class="username-img" src="../../assets/img/kehu.png" alt />
+          <input v-model="ruleForm.username" class="username-input" type="text" placeholder="username" />
         </div>
         <div class="password clearfix">
-          <img class="password-img" src="../../assets/img/password.png" alt />
+          <img class="password-img" src="../../assets/img/quanxian.png" alt />
           <input
             v-model="ruleForm.password"
             type="password"
@@ -53,11 +53,11 @@ export default {
   data() {
     return {
       ruleForm: {
-        name: "",
+        username: "",
         password: ""
       },
       rules: {
-        name: [
+        username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
@@ -91,28 +91,17 @@ export default {
   methods: {
     ...mapActions(["Login"]),
     login() {
-      let name = /^[a-zA-Z]{4,16}$/;
+      let username = /^[a-zA-Z]{4,16}$/;
       let password = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?]).*$/;
       // alert(this.ruleForm.name)
-      if (this.ruleForm.name.trim() == "" && this.ruleForm.name.length == 0) {
+      if (this.ruleForm.username == "" && this.ruleForm.username.length == 0) {
         this.$message.warning("请输入用户名");
       } else if (
         this.ruleForm.password.trim() == "" &&
         this.ruleForm.password.length == 0
       ) {
         this.$message.warning("请输入密码");
-      } else if (!name.test(this.ruleForm.name)) {
-        const h = this.$createElement;
-        this.$notify({
-          title: "提示信息",
-          message: h(
-            "i",
-            { style: "color: teal" },
-            "用户名至少4-16个字符，由字母数字组成"
-          )
-        });
-        // this.$message.warning("至少8-16个字符，至少1个大写字母，1个小写字母和1个数字，其他可以是任意字符")
-      } else if (!password.test(this.ruleForm.password)) {
+      }else if (!password.test(this.ruleForm.password)) {
         const h = this.$createElement;
         this.$notify({
           title: "提示信息",
@@ -204,13 +193,13 @@ export default {
   },
   mounted() {
     let that = this
-   document.addEventListener('keydown', (e) => {
-     if(e.keyCode==13){
-       that.login()
-     }
-      console.log(e.keyCode)
-      // 下面可以通过keyCode来添加键盘事件
-   })    
+  //  document.addEventListener('keydown', (e) => {
+  //    if(e.keyCode==13){
+  //      that.login()
+  //    }
+  //     console.log(e.keyCode)
+  //     // 下面可以通过keyCode来添加键盘事件
+  //  })    
   },
   components: {}
 };
@@ -254,7 +243,7 @@ body {
   height: 100%;
 }
 .login-main {
-  // background: url("../../assets/img/backone.jpg") no-repeat;
+  background: url("../../assets/img/backone.jpg") no-repeat;
   background-size: cover;
   padding: 20px;
   box-sizing: border-box;
@@ -283,10 +272,10 @@ body {
   border: none;
 }
 .login-body {
-  // border-radius: 8px;
-  background: #00000060;
-  height: 260px;
-  width: 550px;
+  border-radius: 8px;
+  background: #fff;
+  height: 40%;
+  width: 40%;
   margin: 0 auto;
   position: absolute;
   top: 20%; /*偏移*/
@@ -312,7 +301,7 @@ body {
         border: none;
         background: #ffffff00;
         border-bottom: 2px solid #fff;
-        color: #fff;
+        color: #000000;
         width: 86%;
         font-size: 25px;
         line-height: 26px;
@@ -332,7 +321,7 @@ body {
         height: 30px;
       }
       .password-input {
-        color: #fff;
+        color: #000000;
         width: 86%;
         font-size: 25px;
         line-height: 26px;

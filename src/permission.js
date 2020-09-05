@@ -10,19 +10,20 @@ router.beforeEach((to, from, next) => {
     NProgress.start()
     // NProgress.done()
     // next()
+    console.log(store.getters)
     if (store.getters.login == 1) {
         NProgress.done()
         next()
+        // console.log("1111")
         // if (store.getters.getMenu) {
         //     // 解决页面刷新失效
         //     if (router.options.routes.length < store.getters.routeLength) {
+        //         console.log("2222")
         //         store.commit("AddRoutes")
-        //         next({
-        //             ...to,
-        //             replace: true
-        //         })
+        //         next()
         //         NProgress.done()
         //     } else {
+        //         console.log("3333")
         //         next()
         //         NProgress.done()
         //     }
@@ -30,17 +31,19 @@ router.beforeEach((to, from, next) => {
         //     store.commit("AddRoutes")
         //     store.commit("SET_ROUTELENGTH", router.options.routes.length)
         //     store.commit("SET_GETMENU", true)
-
         //     NProgress.done()
-        //     next({
-        //         ...to,
-        //         replace: true
-        //     }) // hack方法 确保addRoutes已完成
-
+        //     console.log("4444")
+        //     next() // hack方法 确保addRoutes已完成
         // }
     } else {
-        next({ name: 'login' })
-        NProgress.done()
+        if (to.path == '/') {
+            next()
+            NProgress.done()
+        } else {
+            next("/")
+            NProgress.done()
+        }
+
     }
 })
 

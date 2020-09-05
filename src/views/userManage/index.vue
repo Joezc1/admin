@@ -1,27 +1,62 @@
 <template>
   <div class="topic-main">
     <div class="topic-header">
-      <div class="header">
-        <el-row>
-          <el-col :span="2">
-            <el-button icon="el-icon-refresh" @click="getUsers"></el-button>
-          </el-col>
-          <el-col :span="2">
-            <span>Username:</span>
-          </el-col>
-          <el-col :span="3">
-            <el-input v-model="reqData.username" placeholder="请输入Username"></el-input>
-          </el-col>
-          <el-col :offset="13" :span="4">
-            <el-button size="small" type="primary" @click.native.stop="restReqdata" plain>重置</el-button>
-            <el-button size="small" type="primary" @click.native.stop="searchReqdata" plain>搜索</el-button>
-            <el-button size="small" type="primary" @click.native.stop="newProject" plain>新建</el-button>
-          </el-col>
-        </el-row>
-      </div>
+       <el-drawer
+        :with-header="false"
+        :visible.sync="drawer"
+        direction="rtl"
+        :before-close="handleClose"
+        size="20%"
+      >
+        <div class="drawer-main">
+           <div class="drawer-header clearfix">
+            <div class="drawer-left">
+              <i class="el-icon-warning-outline"></i>
+              <div class="drawer-title">搜索用户</div>
+            </div>
+            <div class="drawer-right">
+              <i class="el-icon-close" @click="drawer=false"></i>
+            </div>
+          </div>
+          <div class="drawer-input">
+          <el-row :gutter="20">
+            <el-col :span="7">
+              <div class="drawer-label">UID:</div>
+            </el-col>
+            <el-col :span="17">
+              <el-input v-model="reqData.userid"></el-input>
+            </el-col>
+          </el-row>
+          <el-row style="margin-top:20px;" >
+            <el-col :span="7">
+              <div class="drawer-label">昵称:</div>
+            </el-col>
+            <el-col :span="17">
+              <el-input v-model="reqData.nickname"></el-input>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <div class="btns">
+                <el-button size="small" type="primary" @click.native.stop="refeshForm" plain>重置</el-button>
+                <el-button size="small" type="primary" @click.native.stop="getUsers" plain>搜索</el-button>
+              </div>
+            </el-col>
+          </el-row>
+          </div>
+        </div>
+      </el-drawer>
+      <el-row >
+        <el-col :span="1">
+          <el-button size="small" icon="el-icon-refresh" @click="getUsers"></el-button>
+        </el-col>
+        <el-col :span="1" :offset="21">
+          <el-button size="small" type="success" @click="openDrawer" icon="el-icon-search"></el-button>
+        </el-col>
+      </el-row>
     </div>
     <div class="topic-table">
-      <el-table :data="tableData" size="medium" v-loading="loading">
+      <el-table :data="tableData" size="small" v-loading="loading">
         <el-table-column label="UID" width="250">
           <template slot-scope="scope">
             <span>{{ scope.row.userid }}</span>
@@ -39,7 +74,7 @@
         </el-table-column>
         <el-table-column label="Sex" width="100">
           <template slot-scope="scope">
-            <span>{{ parseNull(scope.row.sex) }}</span>
+            <span>{{ scope.row.sex | switchSex }}</span>
           </template>
         </el-table-column>
         <el-table-column label="Birthday" width="120">
@@ -93,7 +128,7 @@
         close-on-press-escape
         @close="closeDialog"
         :visible.sync="dialogVisible"
-        width="80%"
+        width="60%"
         center
       >
         <el-form
@@ -181,10 +216,12 @@ export default {
   name: "home",
   data() {
     return {
+      drawer:false,
       topicid: "",
       disabled: false,
       dialogVisible: false,
       loading: false,
+      
       // form表单
       ruleForm: {
         id: "",
@@ -197,7 +234,8 @@ export default {
         heat: "",
         brower: "",
         topic: "",
-        topiccover: ""
+        topiccover: "",
+        grade: ''
       },
       // 表单规则
       rules: {
@@ -206,7 +244,7 @@ export default {
       reqData: {
         pageNo: 1,
         pageSize: 10,
-        pageCount: "",
+        pageCount: 1,
         userid: "",
         nickname: ""
       },
@@ -256,7 +294,38 @@ export default {
       }
     }
   },
+  filters: {
+    switchSex(sex){
+      switch (sex) {
+        case 0:
+          return "男";
+          break;
+        default:
+          return "女";
+          break;
+      }
+    }
+  },
   methods: {
+     openDrawer() {
+      this.drawer = true;
+    },
+    handleClose(done) {
+      done();
+    },
+    handleSearch() {
+      this.getTopics();
+      this.drawer = true;
+    },
+    refeshForm() {
+      this.reqData =  {
+        pageNo: 1,
+        pageSize: 10,
+        pageCount: 1,
+        userid: "",
+        nickname: ""
+      }
+    },
     switchComplete(type) {
       switch (type) {
         case 0:
@@ -323,6 +392,7 @@ export default {
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      this.reqData.pageSize = val
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
@@ -458,6 +528,64 @@ $gray: #d9d9d9;
     line-height: 40px;
     font-size: 17px;
   }
+}
+.drawer-label{
+  line-height: 40px;
+}
+.drawer-header {
+  border-bottom: 1px solid #55555520;
+  padding: 0 0 10px 0;
+  box-sizing: border-box;
+  .drawer-left {
+    float: left;
+    display: flex;
+    i {
+      line-height: 24px;
+    }
+    div {
+    }
+  }
+  .drawer-right {
+    float: right;
+    i {
+    }
+  }
+}
+.drawer-input {
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  .btns {
+    margin-top: 20px;
+    box-sizing: border-box;
+  }
+}
+.drawer-main {
+  padding: 50px 20px 50px 20px;
+  box-sizing: border-box;
+  height: 100vh;
+}
+.header {
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px dashed #d9d9d9;
+  border-radius: 5px;
+  span {
+    line-height: 40px;
+    font-size: 17px;
+  }
+}
+.topic-header {
+  padding: 5px 0 7px 10px;
+  border-bottom: 1px dashed #ebeef5;
+  box-sizing: border-box;
+}
+.btns {
+  text-align: center;
+}
+.topic-table{
+  margin-top: 20px;
 }
 .topic-header {
   padding: 5px 0 0 10px;

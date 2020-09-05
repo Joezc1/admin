@@ -19,10 +19,10 @@
           <img src="@/assets/img/a.jpg" />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="a" icon="el-icon-setting">设置</el-dropdown-item>
+          <!-- <el-dropdown-item command="a" icon="el-icon-setting">设置</el-dropdown-item>
           <el-dropdown-item command="b" icon="el-icon-circle-plus">狮子头</el-dropdown-item>
           <el-dropdown-item command="c" icon="el-icon-check">双皮奶</el-dropdown-item>
-          <el-dropdown-item command="d" icon="el-icon-circle-check">蚵仔煎</el-dropdown-item>
+          <el-dropdown-item command="d" icon="el-icon-circle-check">蚵仔煎</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -47,15 +47,14 @@ export default {
     };
   },
   watch: {
-    $route: {
-      getBreadList() {
-        $route.matched.forEach(element => {
-          this.breadlist.push(element);
-        });
-      }
-    }
+    '$route':'getBreadList'
   },
   methods: {
+    getBreadList(){
+      this.$route.matched.forEach(element => {
+          this.breadlist.push(element);
+        });
+    },
     // logout:async function() {
     //   await myAxios.logout({ userid: this.$store.getters.userid }).then(res => {
     //     alert("登出");

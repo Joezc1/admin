@@ -7,11 +7,11 @@
     <div class="header-title" v-show="!isCollapse">贺院知道管理系统</div>
     <el-menu
       @select="selectIndex"
-      :default-active="menuindex || '1-1'"
+      default-active="1-1"
       background-color="rgb(48, 65, 86)"
       text-color="rgb(191, 203, 217)"
       active-text-color="#409EFF"
-      :class='{"el-menu-vertical-demo":true,"hiddenscroll":!isCollapse}'
+      :class="{'el-menu-vertical-demo':true,'hiddenscroll':!isCollapse}"
       @open="handleOpen"
       @close="handleClose"
       :collapse="isCollapse"
@@ -59,7 +59,8 @@ export default {
       // isCollapse: false,
       arr: [],
       list: [],
-      routes: []
+      routes: [],
+      menuindex: ""
       // iconlist: ['el-icon-edit-outline','el-icon-warning-outline','el-icon-tickets','el-icon-user','el-icon-data-analysis']
     };
   },
@@ -72,20 +73,18 @@ export default {
     // ...mapGetters(["routes", "name", "tags", "menuindex"])
   },
   created() {
-    console.log("打印监听route");
-    this.routes = this.$store.getters.routes
-    console.log(router);
+    this.routes = this.$store.getters.routes;
     this.getRoutes();
     // console.log(router)
   },
-  watch: {
-    $route: {
-      getBreadList() {
-        console.log("打印监听route");
-        console.log(router);
-      }
-    }
-  },
+  // watch: {
+  //   $route: {
+  //     getBreadList() {
+  //       console.log("打印监听route");
+  //       console.log(router);
+  //     }
+  //   }
+  // },
   methods: {
     ...mapMutations("admin", {
       setTags: "SET_TAGS"
@@ -97,28 +96,42 @@ export default {
       this.isCollapse = true;
     },
     handleItem(item) {
-      let list = this.tags;
-      let obj = list.find(e => {
-        return e.name === item.name;
-      });
-      if (obj) {
-        console.log("有了");
-        return false;
-      } else {
-        console.log("没有");
+      let list = this.$store.getters.tags;
+      // let obj = list.find(e => {
+      //   return e.name === item.name;
+      // });
+      if (list.length == 0) {
         list.push(item);
       }
-      console.log(this.tags);
-      console.log("打印store");
-      console.log(this.$store);
-      // sessionStorage.title=item.adminname
-      localStorage.setItem("tags", JSON.stringify(list));
-      console.log("tags");
+
+      if (list.length != 0) {
+        let obj = list.find(e => {
+          return e.name == item.name;
+        });
+        if (obj) {
+          console.log("有");
+        } else {
+          console.log("没有");
+          list.push(item);
+        }
+      }
+      console.log(list);
+
+      this.$store.commit("SET_TAGS", list);
+      // localStorage.setItem("tags", JSON.stringify(list));
     },
     // 获取routes对象
     getRoutes() {
       for (let i = 0; i < this.routes.length; i++) {
-        if (this.routes[i].hidden) {
+        if (this.routes[i].name == "role_manage") {
+          if (
+            this.$store.getters.level == 1 ||
+            this.$store.getters.level == "1"
+          ) {
+          } else {
+            this.arr.push(this.routes[i]);
+          }
+        } else if (this.routes[i].hidden) {
         } else {
           this.arr.push(this.routes[i]);
         }
@@ -129,7 +142,8 @@ export default {
       }
       // 将routes存取到状态管理器
       this.$store.state.routes = this.list;
-      // console.log(this.$store.state.routes);
+      console.log("打印routes对象");
+      console.log(this.$store.state.routes);
     },
     formatIndex(ione, itwo) {
       let a = ione * 1 + 1;
@@ -153,7 +167,6 @@ export default {
     selectIndex(e) {
       console.log("选中函数");
       console.log(e);
-      sessionStorage.menuindex = e;
     }
   }
 };
@@ -190,7 +203,26 @@ a {
 }
 .hiddenscroll {
   overflow-x: hidden;
-  overflow-y: hidden;
-  height: 93vh;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  height: 90vh;
 }
+.hiddenscroll::-webkit-scrollbar{
+  width: 0 !important;
+}
+
+
+// .app-main-container {
+//   height: 100%;
+//   padding: 15px;
+//   box-sizing: border-box;
+//   overflow-y: scroll;
+//   overflow-x: hidden;
+//   -ms-overflow-style: none;
+//   overflow: -moz-scrollbars-none;
+// }
+// .app-main-container::-webkit-scrollbar {
+//   width: 0 !important;
+// }
 </style>

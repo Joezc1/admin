@@ -1,6 +1,131 @@
+<style lang="scss" scoped>
+.drawer-main {
+  padding: 30px 20px 50px 20px;
+  box-sizing: border-box;
+  height: 100vh;
+}
+.header {
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px dashed #d9d9d9;
+  border-radius: 5px;
+  span {
+    line-height: 40px;
+    font-size: 17px;
+  }
+}
+.drawer-header {
+  border-bottom: 1px solid #55555520;
+  padding: 0 0 10px 0;
+  box-sizing: border-box;
+  .drawer-left {
+    float: left;
+    display: flex;
+    i {
+      line-height: 24px;
+    }
+    div {
+    }
+  }
+  .drawer-right {
+    float: right;
+    i {
+    }
+  }
+}
+.drawer-input {
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  .btns {
+    margin-top: 20px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+}
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.el-select {
+  float: left;
+}
+.el-form-item__content::after {
+  clear: both;
+  font-size: 0;
+  display: block;
+  height: 0;
+  content: "";
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+.upload-video {
+  height: 200px;
+  width: 40%;
+  margin-left: 0;
+}
+// .newbtn:hover{
+//   transform: rotate(180deg);
+//   transition: 1s;;
+// }
+@keyframes btn{
+  from {
+
+  }
+  to {
+    transform: rotate(45deg);
+  }
+}
+
+.drawer-label{
+  line-height: 40px;
+}
+</style>
+
 <template>
   <div class="content-main">
-    <div class="content-header">
+    <!-- <div class="content-header"> -->
       <!-- <searchBtns
         :reqData="reqData"
         @handleChange="handleChange"
@@ -13,10 +138,61 @@
         :newBtn="true"
         :hiddencase="true"
       ></searchBtns> -->
+    <!-- </div> -->
+       
+    <div class="topic-header">
+       <el-drawer
+        :with-header="false"
+        :visible.sync="drawer"
+        direction="rtl"
+        :before-close="handleClose"
+        size="20%"
+      >
+        <div class="drawer-main">
+           <div class="drawer-header clearfix">
+            <div class="drawer-left">
+              <i class="el-icon-warning-outline"></i>
+              <div class="drawer-title">搜索回答</div>
+            </div>
+            <div class="drawer-right">
+              <i class="el-icon-close" @click="drawer=false"></i>
+            </div>
+          </div>
+          <div class="drawer-input">
+          <el-row :gutter="20">
+            <el-col :span="7">
+              <div class="drawer-label">标题:</div>
+            </el-col>
+            <el-col :span="17">
+              <el-input v-model="reqData.title"></el-input>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <div class="btns">
+                <el-button size="small" type="primary" @click.native.stop="restProject" plain>重置</el-button>
+                <el-button size="small" type="primary" @click.native.stop="findProject" plain>搜索</el-button>
+              </div>
+            </el-col>
+          </el-row>
+          </div>
+        </div>
+      </el-drawer>
+      <el-row >
+        <el-col :span="1">
+          <el-button size="small" icon="el-icon-refresh" @click="getNoticeList"></el-button>
+        </el-col>
+         <el-col :offset="20" :span="1">
+          <el-button size="small" class="newbtn" type="success" icon="el-icon-plus" @click="newProject"></el-button>
+        </el-col>
+        <el-col :span="1" style="margin-left:9px;">
+          <el-button size="small" type="success" @click="openDrawer" icon="el-icon-search"></el-button>
+        </el-col>
+      </el-row>
     </div>
 
     <div class="notice-table">
-      <el-table :data="tableData" v-loading="loading" width="100%" size="medium">
+      <el-table :data="tableData" v-loading="loading" width="100%" size="small">
         <el-table-column label="ID" width="100">
           <template slot-scope="scope">
             <span>{{ scope.row.id }}</span>
@@ -69,7 +245,7 @@
       close-on-press-escape
       @close="closeDialog"
       :visible.sync="dialogVisible"
-      width="80%"
+      width="70%"
       center
     >
       <el-form
@@ -123,32 +299,32 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="公告视频" prop="detail">
+              <video
+                class="upload-video"
+                v-if="ruleForm.video!='undefined'&&ruleForm.video!=''&&ruleForm.video!=null"
+                controls="controls"
+                :src="ruleForm.video"
+              ></video>
               <el-upload
-                v-show="newflag || !disabled"
+              v-if="!disabled"
+                :disabled="disabled"
                 class="upload-demo"
                 drag
                 :action="defaultUrl"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeUploadVideo"
+                multiple
+                :limit="1"
               >
                 <i class="el-icon-upload"></i>
                 <div v-if="disabled" class="el-upload__text">
                   将文件拖到此处，或
                   <em>点击上传</em>
                 </div>
-                <div v-else class="el-upload__text">
-                  修改原视频
-                  <em>点击上传</em>新的视频
-                </div>
                 <div class="el-upload__tip" slot="tip">只能上传mp4,ogg,flv,avi,wmv,rmvb格式的视频</div>
               </el-upload>
 
-              <video
-                class="upload-video"
-                v-show="ruleForm.video!='undefined'&&ruleForm.video!=''&&ruleForm.video!=null&&ruleForm.video!='null'"
-                controls="controls"
-                :src="ruleForm.video"
-              ></video>
+              
             </el-form-item>
           </el-col>
         </el-row>
@@ -188,6 +364,7 @@ export default {
   name: "home",
   data() {
     return {
+      drawer: false,
       socket: null,
       videoFlag: false,
       videoUploadPercent: 0,
@@ -206,7 +383,6 @@ export default {
         }
       ],
       reqData: {
-        title: "",
         author: "",
         detail: "",
         id: "",
@@ -214,7 +390,7 @@ export default {
         createtime: "",
         pageNo: 1,
         pageSize: 10,
-        count: 0
+        count: 1
       },
       ruleForm: {
         title: "",
@@ -242,11 +418,24 @@ export default {
       tableData: []
     };
   },
+  watch:{
+    'ruleForm.video': 'changeVideo'
+  },
   created() {
     this.getNoticeList();
     this.defaultUrl = myaxios.defaultUrl;
   },
   methods: {
+    changeVideo(){
+      console.log("监听到了")
+      this.ruleForm.video = this.ruleForm.video
+    },
+     openDrawer() {
+      this.drawer = true;
+    },
+    handleClose(done) {
+      done();
+    },
     // 文件上传成功
     handleAvatarSuccess(res, file) {
       console.log(res);
@@ -331,7 +520,7 @@ export default {
     },
     handleSizeChange(val) {
       this.reqData.pageSize = val;
-      this.getNoticeList();
+      // this.getNoticeList();
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
@@ -534,66 +723,3 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.el-select {
-  float: left;
-}
-.el-form-item__content::after {
-  clear: both;
-  font-size: 0;
-  display: block;
-  height: 0;
-  content: "";
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-.upload-video {
-  height: 200px;
-  width: 40%;
-  margin-left: 0;
-}
-</style>

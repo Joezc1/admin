@@ -4,7 +4,7 @@ const admin = {
   state: {
     routes : router.options.routes,
     // router.options.routes
-    tags: JSON.parse(localStorage.getItem('tags')),
+    tags: [],
     menuindex: sessionStorage.getItem('menuindex'),
     title: sessionStorage.getItem('title'),
   },

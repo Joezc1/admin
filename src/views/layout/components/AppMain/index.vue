@@ -67,12 +67,18 @@ export default {
 .app-main {
   width: 100%;
   height: 100%;
-  overflow: auto;
 }
 .app-main-container {
   height: 100%;
   padding: 15px;
   box-sizing: border-box;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+.app-main-container::-webkit-scrollbar {
+  width: 0 !important;
 }
 .transition-box {
   margin-bottom: 10px;

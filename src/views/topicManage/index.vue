@@ -10,7 +10,17 @@
           size="20%"
         >
           <div class="drawer-main">
-            <el-row style="padding:20px 0 20px 0;" :gutter="20">
+             <div class="drawer-header clearfix">
+            <div class="drawer-left">
+              <i class="el-icon-warning-outline"></i>
+              <div class="drawer-title">搜索回答</div>
+            </div>
+            <div class="drawer-right">
+              <i class="el-icon-close" @click="drawer=false"></i>
+            </div>
+          </div>
+          <div class="drawer-input">
+            <el-row :gutter="20">
               <el-col :span="7">
                 <div class="drawer-label">标题:</div>
               </el-col>
@@ -19,21 +29,22 @@
               </el-col>
             </el-row>
             <el-row style="padding:20px 0 20px 0;" :gutter="20">
-              <el-col :span="7">
+              <el-col :span="9">
                 <div class="drawer-label">作者UID:</div>
               </el-col>
-              <el-col :span="17">
+              <el-col :span="15">
                 <el-input v-model="reqData.userid"></el-input>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <div class="btns">
-                  <el-button type="primary" @click.native.stop="restReqdata" plain>重置</el-button>
-                  <el-button type="primary" @click.native.stop="handleSearch" plain>搜索</el-button>
+                  <el-button size="small" type="primary" @click.native.stop="restReqdata" plain>重置</el-button>
+                  <el-button size="small" type="primary" @click.native.stop="handleSearch" plain>搜索</el-button>
                 </div>
               </el-col>
             </el-row>
+            </div>
           </div>
         </el-drawer>
         <el-row>
@@ -41,13 +52,13 @@
             <el-button size="small" icon="el-icon-refresh" @click="refeshForm"></el-button>
           </el-col>
           <el-col :span="2" :offset="20">
-            <el-button plain size="small" @click="openDrawer">过滤</el-button>
+            <el-button type="success" icon="el-icon-search" size="small" @click="openDrawer"></el-button>
           </el-col>
         </el-row>
       </div>
     </div>
     <div class="topic-table">
-      <el-table :data="tableData" size="medium" v-loading="loading">
+      <el-table :data="tableData" size="small" v-loading="loading">
         <el-table-column label="ID" width="100">
           <template slot-scope="scope">
             <span>{{ scope.row.id }}</span>
@@ -73,16 +84,16 @@
             <span>{{ scope.row.heat }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="赞同数" width="70">
+        <!-- <el-table-column label="赞同数" width="70">
           <template slot-scope="scope">
             <span>{{ scope.row.agree }}</span>
           </template>
-        </el-table-column>
-        <el-table-column label="评论数" width="70">
+        </el-table-column> -->
+        <!-- <el-table-column label="评论数" width="70">
           <template slot-scope="scope">
             <span>{{ scope.row.comment }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="关注数" width="70">
           <template slot-scope="scope">
             <span>{{ scope.row.follow }}</span>
@@ -117,7 +128,7 @@
               icon="el-icon-edit"
             ></el-button>
             <el-button
-              :disabled="scope.row.type!=1"
+            :disabled="scope.row.type!=1"
               size="small"
               type="primary"
               @click="handlePass(scope.$index,scope.row)"
@@ -140,7 +151,7 @@
         close-on-press-escape
         @close="closeDialog"
         :visible.sync="dialogVisible"
-        width="80%"
+        width="70%"
         center
       >
         <el-form
@@ -177,7 +188,7 @@
             </el-col>
           </el-row>
 
-          <el-row :gutter="20">
+          <!-- <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="评论数" prop="comment">
                 <el-input v-model="ruleForm.comment"></el-input>
@@ -188,7 +199,7 @@
                 <el-input v-model="ruleForm.agree"></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
 
           <el-row :gutter="20">
             <el-col :span="12">
@@ -265,6 +276,7 @@ import { VueEditor } from "vue2-editor";
 const searchBtns = () => import("@/components/searchBtns");
 // @ is an alias to /src
 import * as myAxios from "@/api/topicmanage";
+import * as uploaddAxios from "@/api/upload"
 export default {
   name: "home",
   data() {
@@ -329,10 +341,11 @@ export default {
         title: "",
         pageNo: 1,
         pageSize: 10,
-        pageCount: "",
+        pageCount: 1,
         userid: ""
       },
-      tableData: []
+      tableData: [],
+      level: '0'
     };
   },
   filters: {
@@ -368,7 +381,7 @@ export default {
       await myAxios.updateTopic(row, row.id).then(res => {
         if (res.data.success) {
           that.$message({
-            message: res.data.msg,
+            message: '审核通过',
             type: "success"
           });
         } else {
@@ -458,6 +471,7 @@ export default {
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      this.reqData.pageSize = val
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
@@ -496,7 +510,20 @@ export default {
     async deleteTopic(topicid) {
       let data = {};
       data.id = topicid;
+      let that = this
       await myAxios.deleteTopic(data, topicid).then(res => {
+        if(res.data.success){
+           that.$message({
+            type: "success",
+            message: res.data.msg
+          });
+          that.getTopics()
+        }else{
+           that.$message({
+            type: "error",
+            message: res.data.msg
+          });
+        }
         console.log(res);
       });
     },
@@ -557,7 +584,7 @@ export default {
       var formData = new FormData();
       formData.append("file", file);
 
-      await myaxios.upload(formData).then(res => {
+      await uploaddAxios.upload(formData).then(res => {
         const data = res.data;
         console.log(data);
         let url = res.data.url; // Get url from response
@@ -567,6 +594,7 @@ export default {
     }
   },
   created() {
+    this.level = this.$store.getters.level
     console.log("打印store");
     console.log(this.$store);
     this.getTopics();
@@ -582,6 +610,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.drawer-label{
+  line-height: 40px;
+}
+.drawer-header {
+  border-bottom: 1px solid #55555520;
+  padding: 0 0 10px 0;
+  box-sizing: border-box;
+  .drawer-left {
+    float: left;
+    display: flex;
+    i {
+      line-height: 24px;
+    }
+    div {
+    }
+  }
+  .drawer-right {
+    float: right;
+    i {
+    }
+  }
+}
+.drawer-input {
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  .btns {
+    margin-top: 20px;
+    box-sizing: border-box;
+  }
+}
 .drawer-main {
   padding: 50px 20px 50px 20px;
   box-sizing: border-box;

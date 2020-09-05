@@ -6,7 +6,7 @@ export default {
     component: Layout,
     // name: 'dashboard_manage',
     adminname: '首页',
-    icon: 'el-icon-data-analysis',
+    icon: 'el-icon-s-home',
     meta: {
       title: 'home'
     },
